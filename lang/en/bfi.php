@@ -40,3 +40,6 @@ $string['nonewmodules'] = 'No hay intancias de la actividad BFI.';
 // Add string by form
 $string['feedbackar'] = 'Seleccione una encuesta: ';
 $string['feedbackar_help'] = 'Escoja la encuesta para medir los rasgos de personalidad de los individuos que han diligenciado completamente la misma.';
+
+// Add string errors
+$string['err_recordsfeedback'] = 'No se encontraron encuestas en el curso.';
