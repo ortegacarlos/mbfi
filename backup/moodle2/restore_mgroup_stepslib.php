@@ -17,31 +17,31 @@
 /**
  * @package     moodlecore
  * @subpackage  backup-moodle2
- * @copyright   2019 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Define all the restore steps that will be used by the restore_mgroup_activity_task
+ * Define all the restore steps that will be used by the restore_bfi_activity_task
  */
 
 /**
- * Structure step to restore one mgroup activity
+ * Structure step to restore one bfi activity
  */
-class restore_mgroup_activity_structure_step extends restore_activity_structure_step {
+class restore_bfi_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
 
         $paths = array();
 
-        $paths[] = new restore_path_element('mgroup', '/activity/mgroup');
-        $paths[] = new restore_path_element('mgroup_individual', '/activity/mgroup/individuals/individual');
+        $paths[] = new restore_path_element('bfi', '/activity/bfi');
+        $paths[] = new restore_path_element('bfi_individual', '/activity/bfi/individuals/individual');
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_mgroup($data) {
+    protected function process_bfi($data) {
         global $DB;
 
         $data = (object)$data;
@@ -51,28 +51,28 @@ class restore_mgroup_activity_structure_step extends restore_activity_structure_
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
-        // insert the mgroup record
-        $newitemid = $DB->insert_record('mgroup', $data);
+        // insert the bfi record
+        $newitemid = $DB->insert_record('bfi', $data);
         // immediately after inserting "activity" record, call this
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_mgroup_individual($data) {
+    protected function process_bfi_individual($data) {
         global $DB;
 
         $data = (object)$data;
         $oldid = $data->id;
 
-        $data->mgroupid = $this->get_new_parentid('mgroup');
+        $data->bfiid = $this->get_new_parentid('bfi');
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
-        $newitemid = $DB->insert_record('mgroup_individuals', $data);
-        $this->set_mapping('mgroup_individual', $oldid, $newitemid);
+        $newitemid = $DB->insert_record('bfi_characteristic_values', $data);
+        $this->set_mapping('bfi_characteristic_value', $oldid, $newitemid);
     }
 
     protected function after_execute() {
-        // Add mgroup related files, no need to match by itemname (just internally handled context)
-        $this->add_related_files('mod_mgroup', 'intro', null);
+        // Add bfi related files, no need to match by itemname (just internally handled context)
+        $this->add_related_files('mod_bfi', 'intro', null);
     }
 }

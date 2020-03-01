@@ -17,49 +17,49 @@
 /**
  * @package     moodlecore
  * @subpackage  backup-moodle2
- * @copyright   2019 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Define all the backup steps that will be used by the backup_mgroup_activity_task
+ * Define all the backup steps that will be used by the backup_bfi_activity_task
  */
 
 /**
- * Define the complete mgroup structure for backup, with file and id annotations
+ * Define the complete bfi structure for backup, with file and id annotations
  */
-class backup_mgroup_activity_structure_step extends backup_activity_structure_step {
+class backup_bfi_activity_structure_step extends backup_activity_structure_step {
 
     protected function define_structure() {
 
         // Define each element separated
-        $mgroup = new backup_nested_element('mgroup', array('id'), array(
+        $bfi = new backup_nested_element('bfi', array('id'), array(
             'course', 'name', 'groupsize', 'intro', 'introformat',
             'timecreated', 'timemodified'));
 
-        $individuals = new backup_nested_element('individuals');
+        $characteristic_values = new backup_nested_element('characteristic_values');
 
-        $individual = new backup_nested_element('individual', array('id'), array(
-            'mgroupid', 'workgroup', 'userid', 'username',
-            'fullname', 'timecreated', 'timemodified'));
+        $characteristic_value = new backup_nested_element('characteristic_value', array('id'), array(
+            'bfiid', 'userid', 'username', 'fullname',
+            'timecreated', 'timemodified'));
 
         // Build the tree
-        $mgroup->add_child($individuals);
-        $individuals->add_child($individual);
+        $bfi->add_child($characteristic_values);
+        $characteristic_values->add_child($characteristic_value);
 
         // Define sources
-        $mgroup->set_source_table('mgroup', array('id' => backup::VAR_ACTIVITYID));
+        $bfi->set_source_table('bfi', array('id' => backup::VAR_ACTIVITYID));
 
-        $individual->set_source_sql('
+        $characteristic_value->set_source_sql('
             SELECT  *
-            FROM    {mgroup_individuals}
-            WHERE   mgroupid = ?',
+            FROM    {bfi_characteristic_values}
+            WHERE   bfiid = ?',
             array(backup::VAR_PARENTID));
 
         // Define file annotations
-        $mgroup->annotate_files('mod_mgroup', 'intro', null); // This file area hasn't itemid
+        $bfi->annotate_files('mod_bfi', 'intro', null); // This file area hasn't itemid
 
-        // Return the root element (mgroup), wrapped into standard activity structure
-        return $this->prepare_activity_structure($mgroup);
+        // Return the root element (bfi), wrapped into standard activity structure
+        return $this->prepare_activity_structure($bfi);
     }
 }
