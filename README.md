@@ -1,4 +1,4 @@
-# mgroup #
+# BFI #
 
 TODO Describe the plugin shortly here.
 
