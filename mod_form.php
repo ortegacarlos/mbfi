@@ -64,8 +64,13 @@ class mod_bfi_mod_form extends moodleform_mod {
         // Adding grouping feedback.
         $feedback = array();
         $recordsfeedback = $DB->get_records('feedback', array('course' => $COURSE->id));
-        foreach($recordsfeedback as $recordfeedback) {
-            $feedback[] = $mform->createElement('radio', 'feedback', '', get_string($recordfeedback->name), (int)$recordfeedback->id, null);
+        if(isset($recordsfeedback)) {
+            foreach($recordsfeedback as $recordfeedback) {
+                $feedback[] = $mform->createElement('radio', 'feedback', '', get_string($recordfeedback->name), (int)$recordfeedback->id, null);
+            }
+        }
+        else {
+            \core\notification::error(get_string('err_recordsfeedback', 'bfi'));
         }
         $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'bfi'), array('<br />'), false);
         $mform->addRule('feedbackar', null, 'required', null, 'client');
