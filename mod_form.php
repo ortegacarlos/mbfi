@@ -58,24 +58,32 @@ class mod_bfi_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'bfiname', 'bfi');
 
-        // Adding the standard "intro" and "introformat" fields.
-        $this->standard_intro_elements();
-
         // Adding grouping feedback.
         $feedback = array();
-        $recordsfeedback = $DB->get_records('feedback', array('course' => $COURSE->id));
-        if(isset($recordsfeedback)) {
+        //$recordsfeedback = $DB->get_records('feedback', array('course' => $COURSE->id));
+        $course = $DB->get_record('course', array('id' => $COURSE->id), '*', MUST_EXIST);
+        $recordsfeedback = get_all_instances_in_course('feedback', $course);
+        if(! empty($recordsfeedback)) {
             foreach($recordsfeedback as $recordfeedback) {
-                $feedback[] = $mform->createElement('radio', 'feedback', '', get_string($recordfeedback->name), (int)$recordfeedback->id, null);
+                $feedback[] = $mform->createElement('radio', 'feedback', '', $recordfeedback->name, (int)$recordfeedback->id, null);
             }
         }
         else {
-            \core\notification::error(get_string('err_recordsfeedback', 'bfi'));
+            //\core\notification::error(get_string('err_recordsfeedback', 'bfi'));
+            //echo $OUTPUT->notification(get_string('err_recordsfeedback', 'bfi'));
+            $mform->addElement('html', '<span class="notifications" id="user-notifications">');
+            $mform->addElement('html', '<div class="alert alert-danger alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">');
+            $mform->addElement('html', get_string('err_recordsfeedback', 'bfi'));
+            $mform->addElement('html', '</div>');
+            $mform->addElement('html', '</span>');
         }
         $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'bfi'), array('<br />'), false);
         $mform->addRule('feedbackar', null, 'required', null, 'client');
         //$mform->setDefault('feedback', 0);
         $mform->addHelpButton('feedbackar', 'feedbackar', 'bfi');
+
+        // Adding the standard "intro" and "introformat" fields.
+        $this->standard_intro_elements();
 
         // Add standard elements.
         $this->standard_coursemodule_elements();
