@@ -34,14 +34,14 @@ class backup_bfi_activity_structure_step extends backup_activity_structure_step 
 
         // Define each element separated
         $bfi = new backup_nested_element('bfi', array('id'), array(
-            'course', 'name', 'groupsize', 'intro', 'introformat',
+            'course', 'name', 'intro', 'introformat',
             'timecreated', 'timemodified'));
 
         $characteristic_values = new backup_nested_element('characteristic_values');
 
         $characteristic_value = new backup_nested_element('characteristic_value', array('id'), array(
-            'bfiid', 'userid', 'username', 'fullname',
-            'timecreated', 'timemodified'));
+            'bfiid', 'userid', 'username', 'fullname', 'extraversion', 'agreeableness',
+            'conscientiousness', 'neuroticism', 'openness', 'timecreated', 'timemodified'));
 
         // Build the tree
         $bfi->add_child($characteristic_values);
