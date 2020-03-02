@@ -65,7 +65,13 @@ function bfi_supports($feature) {
  * @return int The id of the newly inserted record.
  */
 function bfi_add_instance($bfi, $mform = null) {
-    global $DB, $CFG;
+    global $DB;
+
+    if(! bfi_feedback_completed($bfi->feedback)) {
+        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $bfi->feedback));
+        \core\notification::error(get_string('err_feedbackcompleted', 'bfi', array('name' => $feedbackname)));
+        print_error('error');
+    }
 
     $bfi->timecreated = time();
     $bfi->id = $DB->insert_record('bfi', $bfi);
@@ -118,4 +124,16 @@ function bfi_delete_instance($id) {
     }
 
     return $result;
+}
+
+/**
+ * Check if feedback is completed by at least one individual.
+ *
+ * @param int $feedbackid Id of the feedback instance.
+ * @return bool True if completed, false otherwise.
+ */
+function bfi_feedback_completed($feedbackid) {
+    global $DB;
+
+    return $DB->record_exists('bfi_completed', array('feedback' => $feedbackid));
 }
