@@ -74,8 +74,15 @@ function bfi_add_instance($bfi, $mform = null) {
     }
 
     $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
-
+    $answers = bfi_calculate_dimensions($feedbackcompleted);
     
+    if(isset($answers)) {
+        var_dump($answers);
+        print_error('error');
+    }
+    else {
+        print_error('error');
+    }
 
     $bfi->timecreated = time();
     $bfi->id = $DB->insert_record('bfi', $bfi);
@@ -153,10 +160,11 @@ function bfi_calculate_dimensions($feedbackscompleted) {
 
     if(! empty($feedbackscompleted)) {
         foreach($feedbackscompleted as $feedbackcompleted) {
-            $countanswers = $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->feedback));
+            $countanswers = $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id));
             if($countanswers == 45) {
-                $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->feedback));
-                //Llamar a función para organizar las dimensiones
+                $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id));
+                $results = bfi_organize_values(array_values($answers));
+                return $results;
             }
             else {
                 $firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
@@ -166,4 +174,84 @@ function bfi_calculate_dimensions($feedbackscompleted) {
             }
         }
     }
+}
+
+/**
+ * Get the feedback value of each individual.
+ *
+ * @param object $answers Array of the feedback value of each individual.
+ * @return object Array with organized values, null if the individual doesn't agree with the informed consent.
+ */
+function bfi_organize_values($answers) {
+
+    $dimensions = new stdClass();
+    $dimensions->extraversion = array();
+    $dimensions->agreeableness = array();
+    $dimensions->conscientiousness = array();
+    $dimensions->neuroticism = array();
+    $dimensions->openness = array();
+
+    if($answers[0]->value == '1') {
+        for ($i=1; $i < sizeof($answers); $i++) { 
+            switch ($i) {
+                case 1 : case 6: case 11: case 16: case 27: case 32: case 40: case 43:
+                    switch ($i) {
+                        case 6: case 16: case 27:
+                            $dimensions->extraversion[$i] = 6 - (int)$answers[$i]->value;
+                            break;
+                        default:
+                            $dimensions->extraversion[$i] = (int)$answers[$i]->value;
+                            break;
+                    }
+                    break;
+                case 2: case 7: case 13: case 22: case 24: case 28: case 33: case 37: case 41:
+                    switch ($i) {
+                        case 2: case 13: case 22: case 33:
+                            $dimensions->agreeableness[$i] = 6 - (int)$answers[$i]->value;
+                            break;
+                        default:
+                            $dimensions->agreeableness[$i] = (int)$answers[$i]->value;
+                            break;
+                    }
+                    break;
+                case 3: case 8: case 14: case 18: case 21: case 25: case 29: case 34: case 42:
+                    switch ($i) {
+                        case 8: case 18: case 25: case 42:
+                            $dimensions->conscientiousness[$i] = 6 - (int)$answers[$i]->value;
+                            break;
+                        default:
+                            $dimensions->conscientiousness[$i] = (int)$answers[$i]->value;
+                            break;
+                    }
+                    break;
+                case 4: case 9: case 15: case 19: case 26: case 30: case 35: case 38:
+                    switch ($i) {
+                        case 9: case 19: case 35:
+                            $dimensions->neuroticism[$i] = 6 - (int)$answers[$i]->value;
+                            break;
+                        default:
+                            $dimensions->neuroticism[$i] = (int)$answers[$i]->value;
+                            break;
+                    }
+                    break;
+                case 5: case 10: case 12: case 17: case 20: case 23: case 31: case 36: case 39: case 44:
+                    switch ($i) {
+                        case 12: case 44:
+                            $dimensions->openness[$i] = 6 - (int)$answers[$i]->value;
+                            break;
+                        default:
+                            $dimensions->openness[$i] = (int)$answers[$i]->value;
+                            break;
+                    }
+                    break;
+                default:
+                    #code...
+                    break;
+            }
+        }
+
+        return $dimensions;
+    }
+
+    return null;
 }
