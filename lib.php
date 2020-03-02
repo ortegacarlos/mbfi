@@ -67,11 +67,15 @@ function bfi_supports($feature) {
 function bfi_add_instance($bfi, $mform = null) {
     global $DB;
 
-    if(! bfi_feedback_completed($bfi->feedback)) {
+    if(! bfi_check_feedback_completed($bfi->feedback)) {
         $feedbackname = $DB->get_field('feedback', 'name', array('id' => $bfi->feedback));
         \core\notification::error(get_string('err_feedbackcompleted', 'bfi', array('name' => $feedbackname)));
         print_error('error');
     }
+
+    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
+
+    
 
     $bfi->timecreated = time();
     $bfi->id = $DB->insert_record('bfi', $bfi);
@@ -130,10 +134,36 @@ function bfi_delete_instance($id) {
  * Check if feedback is completed by at least one individual.
  *
  * @param int $feedbackid Id of the feedback instance.
- * @return bool True if completed, false otherwise.
+ * @return bool True if is completed, false otherwise.
  */
-function bfi_feedback_completed($feedbackid) {
+function bfi_check_feedback_completed($feedbackid) {
     global $DB;
 
-    return $DB->record_exists('bfi_completed', array('feedback' => $feedbackid));
+    return $DB->record_exists('feedback_completed', array('feedback' => $feedbackid));
+}
+
+/**
+ * Calculate the five dimensions of each individual.
+ *
+ * @param object $feedbackscompleted Array of the feedback completed.
+ * @return object Array with the values of each dimension, null otherwise.
+ */
+function bfi_calculate_dimensions($feedbackscompleted) {
+    global $DB;
+
+    if(! empty($feedbackscompleted)) {
+        foreach($feedbackscompleted as $feedbackcompleted) {
+            $countanswers = $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->feedback));
+            if($countanswers == 45) {
+                $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->feedback));
+                //Llamar a función para organizar las dimensiones
+            }
+            else {
+                $firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
+                $lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
+                \core\notification::error(get_string('err_answerscounting', 'bfi', array('fullname' => $firstname.' '.$lastname)));
+                return null;
+            }
+        }
+    }
 }
