@@ -43,3 +43,4 @@ $string['feedbackar_help'] = 'Escoja la encuesta para medir los rasgos de person
 
 // Add string errors
 $string['err_recordsfeedback'] = 'No se encontraron encuestas en el curso.';
+$string['err_feedbackcompleted'] = 'Ningún individuo ha completado la encuesta "{$a->name}".';
