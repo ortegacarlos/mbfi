@@ -28,11 +28,11 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The id of each user."/>
         <FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The username of each user."/>
         <FIELD NAME="fullname" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The fullname of each user."/>
-        <FIELD NAME="extraversion" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="5" COMMENT="Value for the extraversion dimension."/>
-        <FIELD NAME="agreeableness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="5" COMMENT="Value for the agreeableness dimension."/>
-        <FIELD NAME="conscientiousness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="5" COMMENT="Value for the conscientiousness dimension."/>
-        <FIELD NAME="neuroticism" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="5" COMMENT="Value for the neuroticism dimension."/>
-        <FIELD NAME="openness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="5" COMMENT="Value for the openness dimension."/>
+        <FIELD NAME="extraversion" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the extraversion dimension."/>
+        <FIELD NAME="agreeableness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the agreeableness dimension."/>
+        <FIELD NAME="conscientiousness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the conscientiousness dimension."/>
+        <FIELD NAME="neuroticism" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the neuroticism dimension."/>
+        <FIELD NAME="openness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the openness dimension."/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Individual creation time."/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Individual modified time."/>
       </FIELDS>
