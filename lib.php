@@ -81,12 +81,9 @@ function bfi_add_instance($bfi, $mform = null) {
         $bfi->id = $DB->insert_record('bfi', $bfi);
         foreach($dimensionsdata as $dimensiondata) {
             $dimensiondata->bfiid = $bfi->id;
-            $dimensiondata->timecreated = $bfi->timecreated;
-            foreach($dimension as $key => $value) {
-                \core\notification::error($key.' => '.gettype($value).'('.$value.')');
-            }
+            $dimensiondata->timecreated = time();
+            $DB->insert_record('bfi_characteristic_values', $dimensiondata);
         }
-        print_error('error');
     }
     else {
         print_error('error');
@@ -107,10 +104,29 @@ function bfi_add_instance($bfi, $mform = null) {
  * @return bool True if successful, false otherwise.
  */
 function bfi_update_instance($bfi, $mform = null) {
-    global $DB, $CFG;
+    global $DB;
 
-    $bfi->timemodified = time();
-    $bfi->id = $bfi->instance;
+    if(! bfi_check_feedback_completed($bfi->feedback)) {
+        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $bfi->feedback));
+        \core\notification::error(get_string('err_feedbackcompleted', 'bfi', array('name' => $feedbackname)));
+        print_error('error');
+    }
+
+    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
+    $dimensionsdata = bfi_calculate_dimensions($feedbackcompleted);
+    
+    if(isset($dimensionsdata)) {
+        $bfi->timemodified = time();
+        $bfi->id = $bfi->instance;
+        foreach($dimensionsdata as $dimensiondata) {
+            $dimensiondata->bfiid = $bfi->id;
+            $dimensiondata->timemodified = time();
+            $DB->update_record('bfi_characteristic_values', $dimensiondata);
+        }
+    }
+    else {
+        print_error('error');
+    }
 
     //file_put_contents($CFG->dataroot.'/temp/filestorage/resultsupdate.json', json_encode($results));
     return $DB->update_record('bfi', $bfi);
@@ -185,8 +201,8 @@ function bfi_calculate_dimensions($feedbackscompleted) {
                 $data->conscientiousness = $dimension->conscientiousness;
                 $data->neuroticism = $dimension->neuroticism;
                 $data->openness = $dimension->openness;
-                $data->timecreated = null;
-                $data->timemodified = null;
+                $data->timecreated = 0;
+                $data->timemodified = 0;
                 $datavalues[] = $data;
             }
             else {
