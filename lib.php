@@ -74,7 +74,7 @@ function bfi_add_instance($bfi, $mform = null) {
     }
 
     $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
-    $dimensionsdata = bfi_calculate_dimensions($feedbackcompleted);
+    $dimensionsdata = bfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
         $bfi->timecreated = time();
@@ -113,15 +113,21 @@ function bfi_update_instance($bfi, $mform = null) {
     }
 
     $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
-    $dimensionsdata = bfi_calculate_dimensions($feedbackcompleted);
+    $dimensionsdata = bfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
-        $bfi->timemodified = time();
-        $bfi->id = $bfi->instance;
         foreach($dimensionsdata as $dimensiondata) {
-            $dimensiondata->bfiid = $bfi->id;
-            $dimensiondata->timemodified = time();
-            $DB->update_record('bfi_characteristic_values', $dimensiondata);
+            $characteristicvalue = $DB->get_record('bfi_characteristic_values', array('userid' => $dimensiondata->userid));
+            if (! empty($characteristicvalue)) {
+                $characteristicvalue->bfiid = $bfi->instance;
+                $characteristicvalue->timemodified = time();
+                $DB->update_record('bfi_characteristic_values', $characteristicvalue);
+            }
+            else {
+                $dimensiondata->bfiid = $bfi->instance;
+                $dimensiondata->timecreated = time();
+                $DB->insert_record('bfi_characteristic_values', $dimensiondata);
+            }
         }
     }
     else {
@@ -129,6 +135,8 @@ function bfi_update_instance($bfi, $mform = null) {
     }
 
     //file_put_contents($CFG->dataroot.'/temp/filestorage/resultsupdate.json', json_encode($results));
+    $bfi->id = $bfi->instance;
+    $bfi->timemodified = time();
     return $DB->update_record('bfi', $bfi);
 }
 
@@ -190,20 +198,22 @@ function bfi_calculate_dimensions($feedbackscompleted) {
             if($countanswers == 45) {
                 $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id));
                 $results = bfi_organize_values(array_values($answers));
-                $dimension = bfi_calculate_values($results);
-                $data = new stdClass();
-                $data->bfiid = null;
-                $data->userid = $feedbackcompleted->userid;
-                $data->username = $username;
-                $data->fullname = $firstname.' '.$lastname;
-                $data->extraversion = $dimension->extraversion;
-                $data->agreeableness = $dimension->agreeableness;
-                $data->conscientiousness = $dimension->conscientiousness;
-                $data->neuroticism = $dimension->neuroticism;
-                $data->openness = $dimension->openness;
-                $data->timecreated = 0;
-                $data->timemodified = 0;
-                $datavalues[] = $data;
+                if(! empty($results)) {
+                    $dimension = bfi_calculate_values($results);
+                    $data = new stdClass();
+                    $data->bfiid = null;
+                    $data->userid = $feedbackcompleted->userid;
+                    $data->username = $username;
+                    $data->fullname = $firstname.' '.$lastname;
+                    $data->extraversion = $dimension->extraversion;
+                    $data->agreeableness = $dimension->agreeableness;
+                    $data->conscientiousness = $dimension->conscientiousness;
+                    $data->neuroticism = $dimension->neuroticism;
+                    $data->openness = $dimension->openness;
+                    $data->timecreated = 0;
+                    $data->timemodified = 0;
+                    $datavalues[] = $data;
+                }
             }
             else {
                 \core\notification::error(get_string('err_answerscounting', 'bfi', array('fullname' => $firstname.' '.$lastname)));
