@@ -74,18 +74,24 @@ function bfi_add_instance($bfi, $mform = null) {
     }
 
     $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
-    $answers = bfi_calculate_dimensions($feedbackcompleted);
+    $dimensionsdata = bfi_calculate_dimensions($feedbackcompleted);
     
-    if(isset($answers)) {
-        var_dump($answers);
+    if(isset($dimensionsdata)) {
+        $bfi->timecreated = time();
+        $bfi->id = $DB->insert_record('bfi', $bfi);
+        foreach($dimensionsdata as $dimensiondata) {
+            $dimensiondata->bfiid = $bfi->id;
+            $dimensiondata->timecreated = $bfi->timecreated;
+            foreach($dimension as $key => $value) {
+                \core\notification::error($key.' => '.gettype($value).'('.$value.')');
+            }
+        }
         print_error('error');
     }
     else {
         print_error('error');
     }
 
-    $bfi->timecreated = time();
-    $bfi->id = $DB->insert_record('bfi', $bfi);
     //file_put_contents($CFG->dataroot.'/temp/filestorage/resultscreate.json', json_encode($results));
     return $bfi->id;
 }
@@ -159,21 +165,40 @@ function bfi_calculate_dimensions($feedbackscompleted) {
     global $DB;
 
     if(! empty($feedbackscompleted)) {
+        $datavalues = array();
         foreach($feedbackscompleted as $feedbackcompleted) {
             $countanswers = $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id));
+            $username = $DB->get_field('user', 'username', array('id' => $feedbackcompleted->userid));
+            $firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
+            $lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
             if($countanswers == 45) {
                 $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id));
                 $results = bfi_organize_values(array_values($answers));
-                return $results;
+                $dimension = bfi_calculate_values($results);
+                $data = new stdClass();
+                $data->bfiid = null;
+                $data->userid = $feedbackcompleted->userid;
+                $data->username = $username;
+                $data->fullname = $firstname.' '.$lastname;
+                $data->extraversion = $dimension->extraversion;
+                $data->agreeableness = $dimension->agreeableness;
+                $data->conscientiousness = $dimension->conscientiousness;
+                $data->neuroticism = $dimension->neuroticism;
+                $data->openness = $dimension->openness;
+                $data->timecreated = null;
+                $data->timemodified = null;
+                $datavalues[] = $data;
             }
             else {
-                $firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
-                $lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
                 \core\notification::error(get_string('err_answerscounting', 'bfi', array('fullname' => $firstname.' '.$lastname)));
                 return null;
             }
         }
+
+        return $datavalues;
     }
+
+    return null;
 }
 
 /**
@@ -251,6 +276,28 @@ function bfi_organize_values($answers) {
         }
 
         return $dimensions;
+    }
+
+    return null;
+}
+
+/**
+ * Calculate value of each dimension.
+ *
+ * @param object $dimensionsvalues Array with values of each individual.
+ * @return object Array with the value of each dimension, null otherwise.
+ */
+function bfi_calculate_values($dimensionsvalues) {
+
+    if(! empty($dimensionsvalues)) {
+        $dimension = new stdClass();
+        $dimension->extraversion = number_format((array_sum($dimensionsvalues->extraversion) / sizeof($dimensionsvalues->extraversion)), 4);
+        $dimension->agreeableness = number_format((array_sum($dimensionsvalues->agreeableness) / sizeof($dimensionsvalues->agreeableness)), 4);
+        $dimension->conscientiousness = number_format((array_sum($dimensionsvalues->conscientiousness) / sizeof($dimensionsvalues->conscientiousness)), 4);
+        $dimension->neuroticism = number_format((array_sum($dimensionsvalues->neuroticism) / sizeof($dimensionsvalues->neuroticism)), 4);
+        $dimension->openness = number_format((array_sum($dimensionsvalues->openness) / sizeof($dimensionsvalues->openness)), 4);
+
+        return $dimension;
     }
 
     return null;
