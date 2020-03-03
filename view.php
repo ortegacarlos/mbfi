@@ -63,33 +63,31 @@ $PAGE->set_context($modulecontext);
 echo $OUTPUT->header();
 
 echo '<div class="clearer"></div>';
-/*
-$user = null;
-$groupsize = $DB->get_field('bfi', 'groupsize', array('id' => $moduleinstance->id));
-$individuals = array_chunk($DB->get_records('bfi_individuals', array('bfiid' => $moduleinstance->id)), (int)$groupsize);
 
-if(isset($individuals)) {
-    foreach($individuals as $group => $individual) {
-        echo $OUTPUT->container_start('group', 'group');
-        echo '<h3>Grupo '.($group + 1).'</h3><hr>';
-        foreach($individual as $values) {
-            $link = true;
-            $user = $DB->get_record('user', array('id' => $values->userid));
-            if($values->userid == '0') {
-                $user = $DB->get_record('user', array('id' => 1));
-                $link = false;
-            }
-            if(isset($user)) {
-                $user->firstname = $values->fullname;
-                $user->lastname = '';
-            }
-            echo $OUTPUT->box_start('individual', 'individual');
-            echo $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => $link));
-            echo $OUTPUT->box_end();
-        }
-        echo $OUTPUT->container_end();
-    }
+$individuals = $DB->get_records('bfi_characteristic_values', array('bfiid' => $moduleinstance->id));
+
+$table = new html_table();
+$imageuserhd = get_string('imageuserhd', 'bfi');
+$usernamehd = get_string('usernamehd', 'bfi');
+$fullnamehd = get_string('fullnamehd', 'bfi');
+$extraversionhd = get_string('extraversionhd', 'bfi');
+$agreeablenesshd = get_string('agreeablenesshd', 'bfi');
+$conscientiousnesshd = get_string('conscientiousnesshd', 'bfi');
+$neuroticismhd = get_string('neuroticismhd', 'bfi');
+$opennesshd = get_string('opennesshd', 'bfi');
+
+$table->head = array($imageuserhd, $fullnamehd, $extraversionhd, $agreeablenesshd, $conscientiousnesshd, $neuroticismhd, $opennesshd);
+foreach($individuals as $individual) {
+    $user = $DB->get_record('user', array('id' => $individual->userid));
+    $imageuser = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => false, 'link' => true));
+    $username = $individual->username;
+    $fullname = $individual->fullname;
+    $extraversion = $individual->extraversion;
+    $agreeableness = $individual->agreeableness;
+    $conscientiousness = $individual->conscientiousness;
+    $neuroticism = $individual->neuroticism;
+    $openness = $individual->openness;
+    $table->data[] = array($imageuser, $fullname, $extraversion, $agreeableness, $conscientiousness, $neuroticism, $openness);
 }
-*/
-
+echo html_writer::table($table);
 echo $OUTPUT->footer();
