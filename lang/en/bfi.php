@@ -45,3 +45,13 @@ $string['feedbackar_help'] = 'Escoja la encuesta para medir los rasgos de person
 $string['err_recordsfeedback'] = 'No se encontraron encuestas en el curso.';
 $string['err_feedbackcompleted'] = 'Ningún individuo ha completado la encuesta "{$a->name}".';
 $string['err_answerscounting'] = 'El usuario "{$a->fullname}" aún no ha completado el cuestionario.';
+
+// Add string by view
+$string['imageuserhd'] = 'Imagen del usuario';
+$string['usernamehd'] = 'Nombre de usuario';
+$string['fullnamehd'] = 'Nombre(s)/Apellido(s)';
+$string['extraversionhd'] = 'Extraversión';
+$string['agreeablenesshd'] = 'Amabilidad';
+$string['conscientiousnesshd'] = 'Responsabilidad';
+$string['neuroticismhd'] = 'Inestabilidad Emocional';
+$string['opennesshd'] = 'Apertura a Nuevas Experiencias';
