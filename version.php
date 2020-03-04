@@ -18,7 +18,7 @@
  * Plugin version and other meta-data are defined here.
  *
  * @package     mod_bfi
- * @copyright   2019 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,3 +29,6 @@ $plugin->release = '0.1.0';
 $plugin->version = 2020022800;
 $plugin->requires = 2015111600;
 $plugin->maturity = MATURITY_ALPHA;
+$plugin->dependencies = array(
+    'mod_feedback' => 2015111600 // The Feedback enrolment plugin version 2015111600 or higher must be present.
+);
