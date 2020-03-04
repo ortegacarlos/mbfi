@@ -67,6 +67,10 @@ class mod_bfi_mod_form extends moodleform_mod {
             foreach($recordsfeedback as $recordfeedback) {
                 $feedback[] = $mform->createElement('radio', 'feedback', '', $recordfeedback->name, (int)$recordfeedback->id, null);
             }
+            $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'bfi'), array('<br />'), false);
+            $mform->addRule('feedbackar', null, 'required', null, 'client');
+            $mform->setDefault('feedback', $mform->getElementValue('feedback'));
+            $mform->addHelpButton('feedbackar', 'feedbackar', 'bfi');
         }
         else {
             //\core\notification::error(get_string('err_recordsfeedback', 'bfi'));
@@ -77,10 +81,6 @@ class mod_bfi_mod_form extends moodleform_mod {
             $mform->addElement('html', '</div>');
             $mform->addElement('html', '</span>');
         }
-        $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'bfi'), array('<br />'), false);
-        $mform->addRule('feedbackar', null, 'required', null, 'client');
-        //$mform->setDefault('feedback', 0);
-        $mform->addHelpButton('feedbackar', 'feedbackar', 'bfi');
 
         // Adding the standard "intro" and "introformat" fields.
         $this->standard_intro_elements();
