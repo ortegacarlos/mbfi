@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'BFI';
-$string['modulename'] = 'BFI';
-$string['modulename_help'] = 'El módulo BFI permite medir los rasgos de personalidad de un individuo bajo el modelo "Big-Five". Es una adaptación al español del "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998).
+$string['pluginname'] = 'Resultados BFI';
+$string['modulename'] = 'Resultados BFI';
+$string['modulename_help'] = 'El módulo "Resultados BFI" permite medir los rasgos de personalidad de un individuo bajo el modelo "Big-Five". Es una adaptación al español del "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998).
 
 Previamente los integrantes del curso deben haber diligenciado una actividad de tipo encuesta con las preguntas del "Big Five Questionnaire", cuyas respuestas serán tomadas para medir los rasgos de personalidad de los individuos.';
 $string['modulenameplural'] = 'BFI';
@@ -50,8 +50,8 @@ $string['err_answerscounting'] = 'El usuario "{$a->fullname}" aún no ha complet
 $string['imageuserhd'] = 'Imagen del usuario';
 $string['usernamehd'] = 'Nombre de usuario';
 $string['fullnamehd'] = 'Nombre(s)/Apellido(s)';
-$string['extraversionhd'] = 'Extraversión';
-$string['agreeablenesshd'] = 'Amabilidad';
-$string['conscientiousnesshd'] = 'Responsabilidad';
-$string['neuroticismhd'] = 'Inestabilidad Emocional';
-$string['opennesshd'] = 'Apertura a Nuevas Experiencias';
+$string['extraversionhd'] = 'E';
+$string['agreeablenesshd'] = 'A';
+$string['conscientiousnesshd'] = 'C';
+$string['neuroticismhd'] = 'N';
+$string['opennesshd'] = 'O';
