@@ -60,7 +60,6 @@ class mod_bfi_mod_form extends moodleform_mod {
 
         // Adding grouping feedback.
         $feedback = array();
-        //$recordsfeedback = $DB->get_records('feedback', array('course' => $COURSE->id));
         $course = $DB->get_record('course', array('id' => $COURSE->id), '*', MUST_EXIST);
         $recordsfeedback = get_all_instances_in_course('feedback', $course);
         if(! empty($recordsfeedback)) {
@@ -69,12 +68,10 @@ class mod_bfi_mod_form extends moodleform_mod {
             }
             $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'bfi'), array('<br />'), false);
             $mform->addRule('feedbackar', null, 'required', null, 'client');
-            $mform->setDefault('feedback', $mform->getElementValue('feedback'));
+            $mform->setDefault('feedback', $feedback[0]->_attributes['value']);
             $mform->addHelpButton('feedbackar', 'feedbackar', 'bfi');
         }
         else {
-            //\core\notification::error(get_string('err_recordsfeedback', 'bfi'));
-            //echo $OUTPUT->notification(get_string('err_recordsfeedback', 'bfi'));
             $mform->addElement('html', '<span class="notifications" id="user-notifications">');
             $mform->addElement('html', '<div class="alert alert-danger alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">');
             $mform->addElement('html', get_string('err_recordsfeedback', 'bfi'));
