@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Resultados BFI';
 $string['modulename'] = 'Resultados BFI';
-$string['modulename_help'] = 'El módulo "Resultados BFI" permite medir los rasgos de personalidad de un individuo bajo el modelo "Big-Five". Es una adaptación al español del "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998).
+$string['modulename_help'] = 'El módulo "Resultados BFI" permite procesar las respuestas dadas a través de una actividad tipo Encuesta, al “Big-Five Inventory”, el cual es una adaptación al español del instrumento psicométrico "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998) para la medición de rasgos de la personalidad.';
 
-Previamente los integrantes del curso deben haber diligenciado una actividad de tipo encuesta con las preguntas del "Big Five Questionnaire", cuyas respuestas serán tomadas para medir los rasgos de personalidad de los individuos.';
+//Previamente los integrantes del curso deben haber diligenciado una actividad de tipo encuesta con las preguntas del "Big Five Questionnaire", cuyas respuestas serán tomadas para medir los rasgos de personalidad de los individuos.';
 $string['modulenameplural'] = 'BFI';
 
 $string['bfiname'] = 'Nombre';
