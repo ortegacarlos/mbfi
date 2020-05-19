@@ -120,6 +120,7 @@ function bfi_update_instance($bfi, $mform = null) {
             $characteristicvalue = $DB->get_record('bfi_characteristic_values', array('bfiid' => $bfi->instance, 'userid' => $dimensiondata->userid));
             if (! empty($characteristicvalue)) {
                 $characteristicvalue->bfiid = $bfi->instance;
+                $characteristicvalue->fullname = $dimensiondata->fullname;
                 $characteristicvalue->timemodified = time();
                 $DB->update_record('bfi_characteristic_values', $characteristicvalue);
             }
