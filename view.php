@@ -77,15 +77,19 @@ $opennesshd = get_string('opennesshd', 'bfi');
 $table->head = array($fullnamehd, $extraversionhd, $agreeablenesshd, $conscientiousnesshd, $neuroticismhd, $opennesshd);
 foreach($individuals as $individual) {
     $user = $DB->get_record('user', array('id' => $individual->userid));
-    $user->firstname = $individual->fullname;
-    $user->lastname = '';
-    $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => true));
-    $extraversion = $individual->extraversion;
-    $agreeableness = $individual->agreeableness;
-    $conscientiousness = $individual->conscientiousness;
-    $neuroticism = $individual->neuroticism;
-    $openness = $individual->openness;
-    $table->data[] = array($fullname, $extraversion, $agreeableness, $conscientiousness, $neuroticism, $openness);
+    if(isset($user)) {
+        //$user->firstname = $individual->fullname;
+        //$user->lastname = '';
+        $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => true));
+        //$username = $individual->username;
+        //$fullname = $individual->fullname;
+        $extraversion = $individual->extraversion;
+        $agreeableness = $individual->agreeableness;
+        $conscientiousness = $individual->conscientiousness;
+        $neuroticism = $individual->neuroticism;
+        $openness = $individual->openness;
+        $table->data[] = array($fullname, $extraversion, $agreeableness, $conscientiousness, $neuroticism, $openness);
+    }
 }
 echo html_writer::table($table);
 echo $OUTPUT->footer();
