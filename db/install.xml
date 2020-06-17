@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/bfi/db" VERSION="20200301" COMMENT="XMLDB file for Moodle mod/bfi"
+<XMLDB PATH="mod/mbfi/db" VERSION="20200301" COMMENT="XMLDB file for Moodle mod/mbfi"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="bfi" COMMENT="Table containing instances of each module bfi.">
+    <TABLE NAME="mbfi" COMMENT="Table containing instances of each module mbfi.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The id of the course that each instance belongs to."/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="The full name of each instance of the module."/>
         <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Text format of intro field"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Module bfi creation time."/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Module bfi modified time."/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Module mbfi creation time."/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Module mbfi modified time."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -21,13 +21,14 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="bfi_characteristic_values" COMMENT="Characteristic values of each individual.">
+    <TABLE NAME="mbfi_characteristic_values" COMMENT="Characteristic values of each individual.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="bfiid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The id of the bfi that each instance belongs to."/>
+        <FIELD NAME="mbfiid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The id of the mbfi that each instance belongs to."/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The id of each user."/>
-        <FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The username of each user."/>
-        <FIELD NAME="fullname" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The fullname of each user."/>
+        <!--FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The username of each user."/-->
+        <!--FIELD NAME="fullname" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The fullname of each user."/-->
+        <!--FIELD NAME="email" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The email of each user."/-->
         <FIELD NAME="extraversion" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the extraversion dimension."/>
         <FIELD NAME="agreeableness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the agreeableness dimension."/>
         <FIELD NAME="conscientiousness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the conscientiousness dimension."/>
@@ -38,7 +39,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="bfiid" TYPE="foreign" FIELDS="bfiid" REFTABLE="bfi" REFFIELDS="id"/>
+        <KEY NAME="mbfiid" TYPE="foreign" FIELDS="mbfiid" REFTABLE="mbfi" REFFIELDS="id"/>
       </KEYS>
       <INDEXES>
         <INDEX NAME="userid" UNIQUE="false" FIELDS="userid"/>
