@@ -30,7 +30,7 @@
 
 $capabilities = array(
 
-    'mod/bfi:view' => array(
+    'mod/mbfi:view' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -41,7 +41,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/bfi:addinstance' => array(
+    'mod/mbfi:addinstance' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,

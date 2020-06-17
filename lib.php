@@ -17,8 +17,8 @@
 /**
  * Library of interface functions and constants.
  *
- * @package     mod_bfi
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @package     mod_mbfi
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param string $feature Constant representing the feature.
  * @return true | null True if the feature is supported, null otherwise.
  */
-function bfi_supports($feature) {
+function mbfi_supports($feature) {
     switch ($feature) {
         case FEATURE_GROUPS:
             return true;
@@ -54,35 +54,35 @@ function bfi_supports($feature) {
 }
 
 /**
- * Saves a new instance of the mod_bfi into the database.
+ * Saves a new instance of the mod_mbfi into the database.
  *
  * Given an object containing all the necessary data, (defined by the form
  * in mod_form.php) this function will create a new instance and return the id
  * number of the instance.
  *
- * @param object $bfi An object from the form.
- * @param mod_bfi_mod_form $mform The form.
+ * @param object $mbfi An object from the form.
+ * @param mod_mbfi_mod_form $mform The form.
  * @return int The id of the newly inserted record.
  */
-function bfi_add_instance($bfi, $mform = null) {
+function mbfi_add_instance($mbfi, $mform = null) {
     global $DB;
 
-    if(! bfi_check_feedback_completed($bfi->feedback)) {
-        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $bfi->feedback));
-        \core\notification::error(get_string('err_feedbackcompleted', 'bfi', array('name' => $feedbackname)));
+    if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
+        \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
         print_error('error');
     }
 
-    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
-    $dimensionsdata = bfi_calculate_dimensions($feedbackscompleted);
+    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
+    $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
-        $bfi->timecreated = time();
-        $bfi->id = $DB->insert_record('bfi', $bfi);
+        $mbfi->timecreated = time();
+        $mbfi->id = $DB->insert_record('mbfi', $mbfi);
         foreach($dimensionsdata as $dimensiondata) {
-            $dimensiondata->bfiid = $bfi->id;
+            $dimensiondata->mbfiid = $mbfi->id;
             $dimensiondata->timecreated = time();
-            $DB->insert_record('bfi_characteristic_values', $dimensiondata);
+            $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
         }
     }
     else {
@@ -90,44 +90,44 @@ function bfi_add_instance($bfi, $mform = null) {
     }
 
     //file_put_contents($CFG->dataroot.'/temp/filestorage/resultscreate.json', json_encode($results));
-    return $bfi->id;
+    return $mbfi->id;
 }
 
 /**
- * Updates an instance of the mod_bfi in the database.
+ * Updates an instance of the mod_mbfi in the database.
  *
  * Given an object containing all the necessary data (defined in mod_form.php),
  * this function will update an existing instance with new data.
  *
- * @param object $bfi An object from the form in mod_form.php.
- * @param mod_bfi_mod_form $mform The form.
+ * @param object $mbfi An object from the form in mod_form.php.
+ * @param mod_mbfi_mod_form $mform The form.
  * @return bool True if successful, false otherwise.
  */
-function bfi_update_instance($bfi, $mform = null) {
+function mbfi_update_instance($mbfi, $mform = null) {
     global $DB;
 
-    if(! bfi_check_feedback_completed($bfi->feedback)) {
-        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $bfi->feedback));
-        \core\notification::error(get_string('err_feedbackcompleted', 'bfi', array('name' => $feedbackname)));
+    if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
+        \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
         print_error('error');
     }
 
-    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $bfi->feedback));
-    $dimensionsdata = bfi_calculate_dimensions($feedbackscompleted);
+    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
+    $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
         foreach($dimensionsdata as $dimensiondata) {
-            $characteristicvalue = $DB->get_record('bfi_characteristic_values', array('bfiid' => $bfi->instance, 'userid' => $dimensiondata->userid));
+            $characteristicvalue = $DB->get_record('mbfi_characteristic_values', array('mbfiid' => $mbfi->instance, 'userid' => $dimensiondata->userid));
             if (! empty($characteristicvalue)) {
-                $characteristicvalue->bfiid = $bfi->instance;
+                $characteristicvalue->mbfiid = $mbfi->instance;
                 $characteristicvalue->fullname = $dimensiondata->fullname;
                 $characteristicvalue->timemodified = time();
-                $DB->update_record('bfi_characteristic_values', $characteristicvalue);
+                $DB->update_record('mbfi_characteristic_values', $characteristicvalue);
             }
             else {
-                $dimensiondata->bfiid = $bfi->instance;
+                $dimensiondata->mbfiid = $mbfi->instance;
                 $dimensiondata->timecreated = time();
-                $DB->insert_record('bfi_characteristic_values', $dimensiondata);
+                $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
             }
         }
     }
@@ -136,21 +136,21 @@ function bfi_update_instance($bfi, $mform = null) {
     }
 
     //file_put_contents($CFG->dataroot.'/temp/filestorage/resultsupdate.json', json_encode($results));
-    $bfi->id = $bfi->instance;
-    $bfi->timemodified = time();
-    return $DB->update_record('bfi', $bfi);
+    $mbfi->id = $mbfi->instance;
+    $mbfi->timemodified = time();
+    return $DB->update_record('mbfi', $mbfi);
 }
 
 /**
- * Removes an instance of the mod_bfi from the database.
+ * Removes an instance of the mod_mbfi from the database.
  *
  * @param int $id Id of the module instance.
  * @return bool True if successful, false on failure.
  */
-function bfi_delete_instance($id) {
+function mbfi_delete_instance($id) {
     global $DB;
 
-    if (! $bfi = $DB->get_record('bfi', array('id' => $id))) {
+    if (! $mbfi = $DB->get_record('mbfi', array('id' => $id))) {
         return false;
     }
 
@@ -158,10 +158,10 @@ function bfi_delete_instance($id) {
 
     // Delete any dependent records here.
 
-    if(! $DB->delete_records('bfi', array('id' => $id))) {
+    if(! $DB->delete_records('mbfi', array('id' => $id))) {
         $result = false;
     }
-    if(! $DB->delete_records('bfi_characteristic_values', array('bfiid' => $id))) {
+    if(! $DB->delete_records('mbfi_characteristic_values', array('mbfiid' => $id))) {
         $result = false;
     }
 
@@ -174,7 +174,7 @@ function bfi_delete_instance($id) {
  * @param int $feedbackid Id of the feedback instance.
  * @return bool True if is completed, false otherwise.
  */
-function bfi_check_feedback_completed($feedbackid) {
+function mbfi_check_feedback_completed($feedbackid) {
     global $DB;
 
     return $DB->record_exists('feedback_completed', array('feedback' => $feedbackid));
@@ -186,26 +186,26 @@ function bfi_check_feedback_completed($feedbackid) {
  * @param object $feedbackscompleted Array of the feedback completed.
  * @return object Array with the values of each dimension, null otherwise.
  */
-function bfi_calculate_dimensions($feedbackscompleted) {
+function mbfi_calculate_dimensions($feedbackscompleted) {
     global $DB;
 
     if(! empty($feedbackscompleted)) {
         $datavalues = array();
         foreach($feedbackscompleted as $feedbackcompleted) {
             $countanswers = $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id));
-            $username = $DB->get_field('user', 'username', array('id' => $feedbackcompleted->userid));
+            //$username = $DB->get_field('user', 'username', array('id' => $feedbackcompleted->userid));
             $firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
             $lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
             if($countanswers == 45) {
                 $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id));
-                $results = bfi_organize_values(array_values($answers));
+                $results = mbfi_organize_values(array_values($answers));
                 if(! empty($results)) {
-                    $dimension = bfi_calculate_values($results);
+                    $dimension = mbfi_calculate_values($results);
                     $data = new stdClass();
-                    $data->bfiid = null;
+                    $data->mbfiid = null;
                     $data->userid = $feedbackcompleted->userid;
-                    $data->username = $username;
-                    $data->fullname = $firstname.' '.$lastname;
+                    //$data->username = $username;
+                    //$data->fullname = $firstname.' '.$lastname;
                     $data->extraversion = $dimension->extraversion;
                     $data->agreeableness = $dimension->agreeableness;
                     $data->conscientiousness = $dimension->conscientiousness;
@@ -217,7 +217,7 @@ function bfi_calculate_dimensions($feedbackscompleted) {
                 }
             }
             else {
-                \core\notification::error(get_string('err_answerscounting', 'bfi', array('fullname' => $firstname.' '.$lastname)));
+                \core\notification::error(get_string('err_answerscounting', 'mbfi', array('fullname' => $firstname.' '.$lastname)));
                 return null;
             }
         }
@@ -234,7 +234,7 @@ function bfi_calculate_dimensions($feedbackscompleted) {
  * @param object $answers Array of the feedback value of each individual.
  * @return object Array with organized values, null if the individual doesn't agree with the informed consent.
  */
-function bfi_organize_values($answers) {
+function mbfi_organize_values($answers) {
 
     $dimensions = new stdClass();
     $dimensions->extraversion = array();
@@ -297,7 +297,6 @@ function bfi_organize_values($answers) {
                     }
                     break;
                 default:
-                    #code...
                     break;
             }
         }
@@ -314,7 +313,7 @@ function bfi_organize_values($answers) {
  * @param object $dimensionsvalues Array with values of each individual.
  * @return object Array with the value of each dimension, null otherwise.
  */
-function bfi_calculate_values($dimensionsvalues) {
+function mbfi_calculate_values($dimensionsvalues) {
 
     if(! empty($dimensionsvalues)) {
         $dimension = new stdClass();

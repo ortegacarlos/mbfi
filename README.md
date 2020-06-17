@@ -1,4 +1,4 @@
-# BFI #
+# MBFI #
 
 TODO Describe the plugin shortly here.
 

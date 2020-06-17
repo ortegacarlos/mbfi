@@ -17,9 +17,9 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     mod_bfi
+ * @package     mod_mbfi
  * @category    string
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,12 +30,12 @@ $string['modulename'] = 'Resultados BFI';
 $string['modulename_help'] = 'El módulo "Resultados BFI" permite procesar las respuestas dadas a través de una actividad tipo Encuesta, al “Big-Five Inventory”, el cual es una adaptación al español del instrumento psicométrico "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998) para la medición de rasgos de la personalidad.';
 
 //Previamente los integrantes del curso deben haber diligenciado una actividad de tipo encuesta con las preguntas del "Big Five Questionnaire", cuyas respuestas serán tomadas para medir los rasgos de personalidad de los individuos.';
-$string['modulenameplural'] = 'BFI';
+$string['modulenameplural'] = 'Resultados BFI';
 
-$string['bfiname'] = 'Nombre';
-$string['bfiname_help'] = 'Digite el nombre identificador de la nueva actividad BFI.';
+$string['mbfiname'] = 'Nombre';
+$string['mbfiname_help'] = 'Digite el nombre identificador para la nueva actividad Resultados BFI.';
 
-$string['nonewmodules'] = 'No hay intancias de la actividad BFI.';
+$string['nonewmodules'] = 'No hay intancias de la actividad Resultados BFI.';
 
 // Add string by form
 $string['feedbackar'] = 'Seleccione una encuesta: ';
@@ -47,8 +47,8 @@ $string['err_feedbackcompleted'] = 'Ningún individuo ha completado la encuesta 
 $string['err_answerscounting'] = 'El usuario "{$a->fullname}" aún no ha completado el cuestionario.';
 
 // Add string by view
-$string['imageuserhd'] = 'Imagen del usuario';
-$string['usernamehd'] = 'Nombre de usuario';
+//$string['imageuserhd'] = 'Imagen del usuario';
+//$string['usernamehd'] = 'Nombre de usuario';
 $string['fullnamehd'] = 'Nombre(s)/Apellido(s)';
 $string['extraversionhd'] = 'E';
 $string['agreeablenesshd'] = 'A';

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Display information about all the mod_bfi modules in the requested course.
+ * Display information about all the mod_mbfi modules in the requested course.
  *
- * @package     mod_bfi
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @package     mod_mbfi
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,26 +33,26 @@ require_course_login($course);
 
 $coursecontext = context_course::instance($course->id);
 
-$event = \mod_bfi\event\course_module_instance_list_viewed::create(array(
+$event = \mod_mbfi\event\course_module_instance_list_viewed::create(array(
     'context' => $coursecontext //Cambio $modulecontext por $coursecontext
 ));
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 
-$PAGE->set_url('/mod/bfi/index.php', array('id' => $id));
+$PAGE->set_url('/mod/mbfi/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-$modulenameplural = get_string('modulenameplural', 'bfi');
+$modulenameplural = get_string('modulenameplural', 'mbfi');
 echo $OUTPUT->heading($modulenameplural);
 
-$bfis = get_all_instances_in_course('bfi', $course);
+$mbfis = get_all_instances_in_course('mbfi', $course);
 
-if (empty($bfis)) {
-    notice(get_string('nonewmodules', 'bfi'), new moodle_url('/course/view.php', array('id' => $course->id)));
+if (empty($mbfis)) {
+    notice(get_string('nonewmodules', 'mbfi'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 $table = new html_table();
@@ -69,20 +69,20 @@ if ($course->format == 'weeks') {
     $table->align = array('left', 'left', 'left');
 }
 
-foreach ($bfis as $bfi) {
-    if (!$bfi->visible) {
+foreach ($mbfis as $mbfi) {
+    if (!$mbfi->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/bfi/view.php', array('id' => $bfi->coursemodule)),
-            format_string($bfi->name, true),
+            new moodle_url('/mod/mbfi/view.php', array('id' => $mbfi->coursemodule)),
+            format_string($mbfi->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/bfi/view.php', array('id' => $bfi->coursemodule)),
-            format_string($bfi->name, true));
+            new moodle_url('/mod/mbfi/view.php', array('id' => $mbfi->coursemodule)),
+            format_string($mbfi->name, true));
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
-        $table->data[] = array($bfi->section, $link);
+        $table->data[] = array($mbfi->section, $link);
     } else {
         $table->data[] = array($link);
     }

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Prints an instance of mod_bfi.
+ * Prints an instance of mod_mbfi.
  *
- * @package     mod_bfi
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @package     mod_mbfi
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -32,30 +32,30 @@ $id = optional_param('id', 0, PARAM_INT);
 $m  = optional_param('m', 0, PARAM_INT);
 
 if ($id) {
-    $cm             = get_coursemodule_from_id('bfi', $id, 0, false, MUST_EXIST);
+    $cm             = get_coursemodule_from_id('mbfi', $id, 0, false, MUST_EXIST);
     $course         = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record('bfi', array('id' => $cm->instance), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('mbfi', array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($m) {
-    $moduleinstance = $DB->get_record('bfi', array('id' => $m), '*', MUST_EXIST); //Cambio $n por $m
+    $moduleinstance = $DB->get_record('mbfi', array('id' => $m), '*', MUST_EXIST); //Cambio $n por $m
     $course         = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cm             = get_coursemodule_from_instance('bfi', $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $cm             = get_coursemodule_from_instance('mbfi', $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
-    print_error(get_string('missingidandcmid', 'bfi'));
+    print_error(get_string('missingidandcmid', 'mbfi'));
 }
 
 require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-$event = \mod_bfi\event\course_module_viewed::create(array(
+$event = \mod_mbfi\event\course_module_viewed::create(array(
     'objectid' => $moduleinstance->id,
     'context' => $modulecontext
 ));
 $event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('bfi', $moduleinstance);
+$event->add_record_snapshot('mbfi', $moduleinstance);
 $event->trigger();
 
-$PAGE->set_url('/mod/bfi/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/mbfi/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
@@ -64,15 +64,15 @@ echo $OUTPUT->header();
 
 echo '<div class="clearer"></div>';
 
-$individuals = $DB->get_records('bfi_characteristic_values', array('bfiid' => $moduleinstance->id));
+$individuals = $DB->get_records('mbfi_characteristic_values', array('mbfiid' => $moduleinstance->id));
 
 $table = new html_table();
-$fullnamehd = get_string('fullnamehd', 'bfi');
-$extraversionhd = get_string('extraversionhd', 'bfi');
-$agreeablenesshd = get_string('agreeablenesshd', 'bfi');
-$conscientiousnesshd = get_string('conscientiousnesshd', 'bfi');
-$neuroticismhd = get_string('neuroticismhd', 'bfi');
-$opennesshd = get_string('opennesshd', 'bfi');
+$fullnamehd = get_string('fullnamehd', 'mbfi');
+$extraversionhd = get_string('extraversionhd', 'mbfi');
+$agreeablenesshd = get_string('agreeablenesshd', 'mbfi');
+$conscientiousnesshd = get_string('conscientiousnesshd', 'mbfi');
+$neuroticismhd = get_string('neuroticismhd', 'mbfi');
+$opennesshd = get_string('opennesshd', 'mbfi');
 
 $table->head = array($fullnamehd, $extraversionhd, $agreeablenesshd, $conscientiousnesshd, $neuroticismhd, $opennesshd);
 foreach($individuals as $individual) {

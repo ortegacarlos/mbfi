@@ -17,9 +17,9 @@
 /**
  * Plugin upgrade steps are defined here.
  *
- * @package     mod_bfi
+ * @package     mod_mbfi
  * @category    upgrade
- * @copyright   2019 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2019 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,12 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__.'/upgradelib.php');
 
 /**
- * Execute mod_bfi upgrade from the given old version.
+ * Execute mod_mbfi upgrade from the given old version.
  *
  * @param int $oldversion
  * @return bool
  */
-function xmldb_bfi_upgrade($oldversion) {
+function xmldb_mbfi_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();

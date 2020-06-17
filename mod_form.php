@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The main mod_bfi configuration form.
+ * The main mod_mbfi configuration form.
  *
- * @package     mod_bfi
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @package     mod_mbfi
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,11 +29,11 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 /**
  * Module instance settings form.
  *
- * @package    mod_bfi
+ * @package    mod_mbfi
  * @copyright  2020 Carlos Ortega <carlosortega@udenar.edu.co>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_bfi_mod_form extends moodleform_mod {
+class mod_mbfi_mod_form extends moodleform_mod {
 
     /**
      * Defines forms elements
@@ -47,7 +47,7 @@ class mod_bfi_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('bfiname', 'bfi'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('mbfiname', 'mbfi'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -56,7 +56,7 @@ class mod_bfi_mod_form extends moodleform_mod {
         $mform->applyFilter('name', 'trim');
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'bfiname', 'bfi');
+        $mform->addHelpButton('name', 'mbfiname', 'mbfi');
 
         // Adding grouping feedback.
         $feedback = array();
@@ -66,15 +66,15 @@ class mod_bfi_mod_form extends moodleform_mod {
             foreach($recordsfeedback as $recordfeedback) {
                 $feedback[] = $mform->createElement('radio', 'feedback', '', $recordfeedback->name, (int)$recordfeedback->id, null);
             }
-            $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'bfi'), array('<br />'), false);
+            $mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'mbfi'), array('<br />'), false);
             $mform->addRule('feedbackar', null, 'required', null, 'client');
             $mform->setDefault('feedback', $feedback[0]->_attributes['value']);
-            $mform->addHelpButton('feedbackar', 'feedbackar', 'bfi');
+            $mform->addHelpButton('feedbackar', 'feedbackar', 'mbfi');
         }
         else {
             $mform->addElement('html', '<span class="notifications" id="user-notifications">');
             $mform->addElement('html', '<div class="alert alert-danger alert-block fade in " role="alert" data-aria-autofocus="true" tabindex="0">');
-            $mform->addElement('html', get_string('err_recordsfeedback', 'bfi'));
+            $mform->addElement('html', get_string('err_recordsfeedback', 'mbfi'));
             $mform->addElement('html', '</div>');
             $mform->addElement('html', '</span>');
         }
