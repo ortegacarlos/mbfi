@@ -17,49 +17,49 @@
 /**
  * @package     moodlecore
  * @subpackage  backup-moodle2
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Define all the backup steps that will be used by the backup_bfi_activity_task
+ * Define all the backup steps that will be used by the backup_mbfi_activity_task
  */
 
 /**
- * Define the complete bfi structure for backup, with file and id annotations
+ * Define the complete mbfi structure for backup, with file and id annotations
  */
-class backup_bfi_activity_structure_step extends backup_activity_structure_step {
+class backup_mbfi_activity_structure_step extends backup_activity_structure_step {
 
     protected function define_structure() {
 
         // Define each element separated
-        $bfi = new backup_nested_element('bfi', array('id'), array(
+        $mbfi = new backup_nested_element('mbfi', array('id'), array(
             'course', 'name', 'intro', 'introformat',
             'timecreated', 'timemodified'));
 
         $characteristic_values = new backup_nested_element('characteristic_values');
 
         $characteristic_value = new backup_nested_element('characteristic_value', array('id'), array(
-            'bfiid', 'userid', 'username', 'fullname', 'extraversion', 'agreeableness',
-            'conscientiousness', 'neuroticism', 'openness', 'timecreated', 'timemodified'));
+            'mbfiid', 'userid', 'extraversion', 'agreeableness', 'conscientiousness', 'neuroticism', 'openness',
+            'timecreated', 'timemodified'));
 
         // Build the tree
-        $bfi->add_child($characteristic_values);
+        $mbfi->add_child($characteristic_values);
         $characteristic_values->add_child($characteristic_value);
 
         // Define sources
-        $bfi->set_source_table('bfi', array('id' => backup::VAR_ACTIVITYID));
+        $mbfi->set_source_table('mbfi', array('id' => backup::VAR_ACTIVITYID));
 
         $characteristic_value->set_source_sql('
             SELECT  *
-            FROM    {bfi_characteristic_values}
-            WHERE   bfiid = ?',
+            FROM    {mbfi_characteristic_values}
+            WHERE   mbfiid = ?',
             array(backup::VAR_PARENTID));
 
         // Define file annotations
-        $bfi->annotate_files('mod_bfi', 'intro', null); // This file area hasn't itemid
+        $mbfi->annotate_files('mod_mbfi', 'intro', null); // This file area hasn't itemid
 
-        // Return the root element (bfi), wrapped into standard activity structure
-        return $this->prepare_activity_structure($bfi);
+        // Return the root element (mbfi), wrapped into standard activity structure
+        return $this->prepare_activity_structure($mbfi);
     }
 }

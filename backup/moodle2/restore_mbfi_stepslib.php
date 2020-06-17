@@ -17,31 +17,31 @@
 /**
  * @package     moodlecore
  * @subpackage  backup-moodle2
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * Define all the restore steps that will be used by the restore_bfi_activity_task
+ * Define all the restore steps that will be used by the restore_mbfi_activity_task
  */
 
 /**
- * Structure step to restore one bfi activity
+ * Structure step to restore one mbfi activity
  */
-class restore_bfi_activity_structure_step extends restore_activity_structure_step {
+class restore_mbfi_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
 
         $paths = array();
 
-        $paths[] = new restore_path_element('bfi', '/activity/bfi');
-        $paths[] = new restore_path_element('bfi_individual', '/activity/bfi/individuals/individual');
+        $paths[] = new restore_path_element('mbfi', '/activity/mbfi');
+        $paths[] = new restore_path_element('mbfi_individual', '/activity/mbfi/individuals/individual');
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_bfi($data) {
+    protected function process_mbfi($data) {
         global $DB;
 
         $data = (object)$data;
@@ -51,28 +51,28 @@ class restore_bfi_activity_structure_step extends restore_activity_structure_ste
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
-        // insert the bfi record
-        $newitemid = $DB->insert_record('bfi', $data);
+        // insert the mbfi record
+        $newitemid = $DB->insert_record('mbfi', $data);
         // immediately after inserting "activity" record, call this
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_bfi_individual($data) {
+    protected function process_mbfi_individual($data) {
         global $DB;
 
         $data = (object)$data;
         $oldid = $data->id;
 
-        $data->bfiid = $this->get_new_parentid('bfi');
+        $data->mbfiid = $this->get_new_parentid('mbfi');
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->timemodified = $this->apply_date_offset($data->timemodified);
 
-        $newitemid = $DB->insert_record('bfi_characteristic_values', $data);
-        $this->set_mapping('bfi_characteristic_value', $oldid, $newitemid);
+        $newitemid = $DB->insert_record('mbfi_characteristic_values', $data);
+        $this->set_mapping('mbfi_characteristic_value', $oldid, $newitemid);
     }
 
     protected function after_execute() {
-        // Add bfi related files, no need to match by itemname (just internally handled context)
-        $this->add_related_files('mod_bfi', 'intro', null);
+        // Add mbfi related files, no need to match by itemname (just internally handled context)
+        $this->add_related_files('mod_mbfi', 'intro', null);
     }
 }

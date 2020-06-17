@@ -17,18 +17,18 @@
 /**
  * @package     moodlecore
  * @subpackage  backup-moodle2
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot . '/mod/bfi/backup/moodle2/backup_bfi_stepslib.php'); // Because it exists (must)
-require_once($CFG->dirroot . '/mod/bfi/backup/moodle2/backup_bfi_settingslib.php'); // Because it exists (optional)
+require_once($CFG->dirroot . '/mod/mbfi/backup/moodle2/backup_mbfi_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/mbfi/backup/moodle2/backup_mbfi_settingslib.php'); // Because it exists (optional)
 
 /**
- * bfi backup task that provides all the settings and steps to perform one
+ * mbfi backup task that provides all the settings and steps to perform one
  * complete backup of the activity
  */
-class backup_bfi_activity_task extends backup_activity_task {
+class backup_mbfi_activity_task extends backup_activity_task {
 
     /**
      * Define (add) particular settings this activity can have
@@ -42,7 +42,7 @@ class backup_bfi_activity_task extends backup_activity_task {
      */
     protected function define_my_steps() {
         // Choice only has one structure step
-        $this->add_step(new backup_bfi_activity_structure_step('bfi_structure', 'bfi.xml'));
+        $this->add_step(new backup_mbfi_activity_structure_step('mbfi_structure', 'mbfi.xml'));
     }
 
     /**
@@ -54,13 +54,13 @@ class backup_bfi_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot,"/");
 
-        // Link to the list of bfis
-        $search="/(".$base."\/mod\/bfi\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@BFIINDEX*$2@$', $content);
+        // Link to the list of mbfis
+        $search="/(".$base."\/mod\/mbfi\/index.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@MBFIINDEX*$2@$', $content);
 
-        // Link to bfi view by moduleid
-        $search="/(".$base."\/mod\/bfi\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@BFIVIEWBYID*$2@$', $content);
+        // Link to mbfi view by moduleid
+        $search="/(".$base."\/mod\/mbfi\/view.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@MBFIVIEWBYID*$2@$', $content);
 
         return $content;
     }
