@@ -1,4 +1,4 @@
-# MBFI #
+# M-BFI #
 
 TODO Describe the plugin shortly here.
 
@@ -6,7 +6,7 @@ TODO Provide more detailed description here.
 
 ## License ##
 
-2020 Carlos Ortega <carlosortega@udenar.edu.co>
+2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
