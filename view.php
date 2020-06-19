@@ -48,7 +48,7 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
-require_capability('mo/mbfi:view', $modulecontext);
+require_capability('mod/mbfi:view', $modulecontext);
 
 $event = \mod_mbfi\event\course_module_viewed::create(array(
     'objectid' => $moduleinstance->id,

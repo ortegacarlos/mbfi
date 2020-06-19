@@ -177,7 +177,12 @@ function mbfi_delete_instance($id) {
 function mbfi_check_feedback_completed($feedbackid) {
     global $DB;
 
-    return $DB->record_exists('feedback_completed', array('feedback' => $feedbackid));
+    if (! empty($feedbackid)) {
+        return $DB->record_exists('feedback_completed', array('feedback' => $feedbackid));
+    }
+
+    \core\notification::error(get_string('err_nonefeedback', 'mbfi'));
+    return true;
 }
 
 /**
