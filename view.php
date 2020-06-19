@@ -48,6 +48,8 @@ require_login($course, true, $cm);
 
 $modulecontext = context_module::instance($cm->id);
 
+require_capability('mo/mbfi:view', $modulecontext);
+
 $event = \mod_mbfi\event\course_module_viewed::create(array(
     'objectid' => $moduleinstance->id,
     'context' => $modulecontext
@@ -75,7 +77,7 @@ if ($download == '') {
 }
 
 // Print CSV file
-if ($download == 'csv') {
+if ($download == 'csv' && has_capability('mod/mbfi:downloaddata', $modulecontext)) {
     $mbfiname = $DB->get_field('mbfi', 'name', array('id' => $moduleinstance->id));
     $filename = clean_filename("$course->shortname ".strip_tags(format_string($mbfiname, true))).'.csv';
     
@@ -104,7 +106,7 @@ if ($download == 'csv') {
     exit;
 }
 
-if (data_submitted() && confirm_sesskey()) {
+if (data_submitted() && confirm_sesskey() && has_capability('mod/mbfi:downloaddata', $modulecontext)) {
     redirect("view.php?id=$cm->id");
 }
 
@@ -134,7 +136,7 @@ foreach ($individuals as $individual) {
 
 echo html_writer::table($table);
 
-if (! empty($individuals)) {
+if (! empty($individuals) && has_capability('mod/mbfi:downloaddata', $modulecontext)) {
     $downloadoptions = array();
     $options = array();
     $options['id'] = "$cm->id";

@@ -32,7 +32,7 @@ $capabilities = array(
 
     'mod/mbfi:view' => array(
 
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
             'teacher' => CAP_ALLOW,
@@ -42,6 +42,17 @@ $capabilities = array(
     ),
 
     'mod/mbfi:addinstance' => array(
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'mod/mbfi:downloaddata' => array(
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
