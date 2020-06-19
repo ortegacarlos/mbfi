@@ -47,11 +47,10 @@ $string['err_feedbackcompleted'] = 'Ningún individuo ha completado la encuesta 
 $string['err_answerscounting'] = 'El usuario "{$a->fullname}" aún no ha completado el cuestionario.';
 
 // Add string by view
-//$string['imageuserhd'] = 'Imagen del usuario';
-//$string['usernamehd'] = 'Nombre de usuario';
 $string['fullnamehd'] = 'Nombre(s)/Apellido(s)';
 $string['extraversionhd'] = 'E';
 $string['agreeablenesshd'] = 'A';
 $string['conscientiousnesshd'] = 'C';
 $string['neuroticismhd'] = 'N';
 $string['opennesshd'] = 'O';
+$string['downloadcsv'] = 'Descargar en formato CSV';

@@ -27,6 +27,7 @@ require_once(__DIR__.'/lib.php');
 
 // Course_module ID, or
 $id = optional_param('id', 0, PARAM_INT);
+$download = optional_param('download', '', PARAM_ALPHA);
 
 // ... module instance id.
 $m  = optional_param('m', 0, PARAM_INT);
@@ -55,16 +56,59 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('mbfi', $moduleinstance);
 $event->trigger();
 
-$PAGE->set_url('/mod/mbfi/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($moduleinstance->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($modulecontext);
+$url = new moodle_url('/mod/mbfi/view.php', array('id' => $cm->id));
+if ($download !== '') {
+    $url->param('download', $download);
+}
 
-echo $OUTPUT->header();
-
-echo '<div class="clearer"></div>';
+//$PAGE->set_url('/mod/mbfi/view.php', array('id' => $cm->id));
+$PAGE->set_url($url);
 
 $individuals = $DB->get_records('mbfi_characteristic_values', array('mbfiid' => $moduleinstance->id));
+
+if ($download == '') {
+    $PAGE->set_title(format_string($moduleinstance->name));
+    $PAGE->set_heading(format_string($course->fullname));
+    $PAGE->set_context($modulecontext);
+
+    echo $OUTPUT->header();
+}
+
+// Print CSV file
+if ($download == 'csv') {
+    $mbfiname = $DB->get_field('mbfi', 'name', array('id' => $moduleinstance->id));
+    $filename = clean_filename("$course->shortname ".strip_tags(format_string($mbfiname, true))).'.csv';
+    
+    header("Content-Type: application/download\n");
+    header("Content-Disposition: attachment; filename=\"$filename\"");
+    header("Expires: 0");
+    header("Cache-Control: must-revalidate,post-check=0,pre-check=0");
+    header("Pragma: public");
+
+    // Generate the data for the body of the file
+    if (isset($individuals)) {
+        foreach ($individuals as $individual) {
+            $user = $DB->get_record('user', array('id' => $individual->userid), 'username, firstname, lastname, email');
+            if (isset($user)){
+                echo format_string($user->username).',';
+                echo format_string($user->firstname).' '.format_string($user->lastname).',';
+                echo format_string($user->email).',';
+                echo format_string($individual->extraversion).',';
+                echo format_string($individual->agreeableness).',';
+                echo format_string($individual->conscientiousness).',';
+                echo format_string($individual->neuroticism).',';
+                echo format_string($individual->openness)."\n";
+            }
+        }
+    }
+    exit;
+}
+
+if (data_submitted() && confirm_sesskey()) {
+    redirect("view.php?id=$cm->id");
+}
+
+echo '<div class="clearer"></div>';
 
 $table = new html_table();
 $fullnamehd = get_string('fullnamehd', 'mbfi');
@@ -75,14 +119,10 @@ $neuroticismhd = get_string('neuroticismhd', 'mbfi');
 $opennesshd = get_string('opennesshd', 'mbfi');
 
 $table->head = array($fullnamehd, $extraversionhd, $agreeablenesshd, $conscientiousnesshd, $neuroticismhd, $opennesshd);
-foreach($individuals as $individual) {
+foreach ($individuals as $individual) {
     $user = $DB->get_record('user', array('id' => $individual->userid));
-    if(isset($user)) {
-        //$user->firstname = $individual->fullname;
-        //$user->lastname = '';
+    if (isset($user)) {
         $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => true));
-        //$username = $individual->username;
-        //$fullname = $individual->fullname;
         $extraversion = $individual->extraversion;
         $agreeableness = $individual->agreeableness;
         $conscientiousness = $individual->conscientiousness;
@@ -91,5 +131,17 @@ foreach($individuals as $individual) {
         $table->data[] = array($fullname, $extraversion, $agreeableness, $conscientiousness, $neuroticism, $openness);
     }
 }
+
 echo html_writer::table($table);
+
+if (! empty($individuals)) {
+    $downloadoptions = array();
+    $options = array();
+    $options['id'] = "$cm->id";
+    $options['download'] = 'csv';
+    $button =  $OUTPUT->single_button(new moodle_url('view.php', $options), get_string('downloadcsv', 'mbfi'));
+    $downloadoptions[] = html_writer::tag('div', $button, array('class' => 'align-self-center'));
+    echo html_writer::tag('div', implode('', $downloadoptions), array('class' => 'row justify-content-center'));
+}
+
 echo $OUTPUT->footer();
