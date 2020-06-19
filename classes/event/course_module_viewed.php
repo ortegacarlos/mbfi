@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_bfi course module viewed event.
+ * The mod_mbfi course module viewed event.
  *
- * @package     mod_bfi
- * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @package     mod_mbfi
+ * @copyright   2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_bfi\event;
+namespace mod_mbfi\event;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,7 +36,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
-        $this->data['objecttable'] = 'bfi';
+        $this->data['objecttable'] = 'mbfi';
     }
 
     /**
@@ -45,7 +45,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/bfi/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/mbfi/view.php', array('id' => $this->contextinstanceid));
     }
 
     /**
@@ -54,7 +54,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
      * @return array|null
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'bfi', 'view bfi', 'view.php?id=' . $this->contextinstanceid,
+        return array($this->courseid, 'mbfi', 'view mbfi', 'view.php?id=' . $this->contextinstanceid,
             $this->objectid, $this->contextinstanceid);
     }
 

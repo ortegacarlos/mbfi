@@ -28,5 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 $logs = array(
     array('module'=>'mbfi', 'action'=>'view', 'mtable'=>'mbfi', 'field'=>'name'),
     array('module'=>'mbfi', 'action'=>'update', 'mtable'=>'mbfi', 'field'=>'name'),
-    array('module'=>'mbfi', 'action'=>'add', 'mtable'=>'mbfi', 'field'=>'name')
+    array('module'=>'mbfi', 'action'=>'add', 'mtable'=>'mbfi', 'field'=>'name'),
+    array('module'=>'mbfi', 'action'=>'download', 'mtable'=>'mbfi', 'field'=>'name')
 );

@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
  * Module instance settings form.
  *
  * @package    mod_mbfi
- * @copyright  2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright  2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_mbfi_mod_form extends moodleform_mod {

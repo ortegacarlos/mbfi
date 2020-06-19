@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_bfi instance list viewed event.
+ * The mod_mbfi instance list viewed event.
  *
- * @package    mod_bfi
- * @copyright  2019 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @package    mod_mbfi
+ * @copyright  2019 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_bfi\event;
+namespace mod_mbfi\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_bfi instance list viewed event class.
+ * The mod_mbfi instance list viewed event class.
  *
- * @package    mod_bfi
+ * @package    mod_mbfi
  * @since      Moodle 2.7
- * @copyright  2020 Carlos Ortega <carlosortega@udenar.edu.co>
+ * @copyright  2020 Carlos Ortega <carlosortega@udenar.edu.co> Oscar Revelo Sánchez <orevelo@udenar.edu.co> Jesús Insuasti Portilla <insuasty@udenar.edu.co>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
