@@ -54,7 +54,7 @@ $capabilities = array(
 
     'mod/mbfi:downloaddata' => array(
 
-        'captype' => 'write',
+        'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
             'teacher' => CAP_ALLOW,
