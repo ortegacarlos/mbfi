@@ -422,7 +422,7 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
             }
             else {
                 $userid = 0;
-                $username = 'mbfi_username_'.$index;
+                $username = ($index + 100);
                 $fullname = $feedbackcompleted->fullname;
                 $email = $feedbackcompleted->email;
             }
