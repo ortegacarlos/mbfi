@@ -136,25 +136,52 @@ function mbfi_add_instance($mbfi, $mform = null) {
  * @return bool True if successful, false otherwise.
  */
 function mbfi_update_instance($mbfi, $mform = null) {
-    global $DB;
+    global $DB, $CFG, $MBFI_CONTENT_FILE;
 
-    if(! mbfi_check_feedback_completed($mbfi->feedback)) {
-        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
-        \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
-        print_error('error');
+    $path = $CFG->dataroot.'/temp/filestorage/mbfiuserfile_'.(time() + rand()).'.csv';
+    $feedbackscompleted = null;
+    $datasource = '0'; // data source file
+
+    if(isset($mbfi->datasource)) {
+        $datasource = $mbfi->datasource;
+        if($datasource == '0') {
+            if(! mbfi_save_file($path, $mform)) {
+                print_error('error');
+            }
+
+            if(! mbfi_check_file(45, $path)) {
+                mbfi_delete_file($path);
+                print_error('error');
+            }
+
+            $feedbackscompleted = mbfi_organize_file_data();
+
+            if(empty($feedbackscompleted)) {
+                mbfi_delete_file($path);
+                print_error('error');
+            }
+        }
+        else {
+            if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+                $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
+                \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
+                print_error('error');
+            }
+        
+            $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
+        }
     }
 
-    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
         foreach($dimensionsdata as $dimensiondata) {
-            $characteristicvalue = $DB->get_record('mbfi_characteristic_values', array('mbfiid' => $mbfi->instance, 'userid' => $dimensiondata->userid));
-            if (! empty($characteristicvalue)) {
-                $characteristicvalue->mbfiid = $mbfi->instance;
-                $characteristicvalue->fullname = $dimensiondata->fullname;
-                $characteristicvalue->timemodified = time();
-                $DB->update_record('mbfi_characteristic_values', $characteristicvalue);
+            $individualdimensions = $DB->get_record('mbfi_characteristic_values', array('mbfiid' => $mbfi->instance, 'userid' => $dimensiondata->userid, 'username' => $dimensiondata->username));
+            if (! empty($individualdimensions)) {
+                $individualdimensions->mbfiid = $mbfi->instance;
+                $individualdimensions->fullname = $dimensiondata->fullname;
+                $individualdimensions->timemodified = time();
+                $DB->update_record('mbfi_characteristic_values', $individualdimensions);
             }
             else {
                 $dimensiondata->mbfiid = $mbfi->instance;
@@ -164,6 +191,7 @@ function mbfi_update_instance($mbfi, $mform = null) {
         }
     }
     else {
+        \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
         print_error('error');
     }
 
@@ -378,7 +406,7 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
         $username = null;
         $fullname = null;
         $email = null;
-        foreach($feedbackscompleted as $feedbackcompleted) {
+        foreach($feedbackscompleted as $index => $feedbackcompleted) {
             $amountanswers = (isset($feedbackcompleted->id)) ? $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id)) : $feedbackcompleted->amountanswers;
             if(isset($feedbackcompleted->userid)) {
                 $userid = $feedbackcompleted->userid;
@@ -392,7 +420,7 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
             }
             else {
                 $userid = 0;
-                $username = '0';
+                $username = 'mbfi_username_'.$index;
                 $fullname = $feedbackcompleted->fullname;
                 $email = $feedbackcompleted->email;
             }
