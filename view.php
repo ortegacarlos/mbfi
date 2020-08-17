@@ -91,7 +91,7 @@ if ($download == 'csv' && has_capability('mod/mbfi:downloaddata', $modulecontext
     if (isset($individuals)) {
         foreach ($individuals as $individual) {
             $user = $DB->get_record('user', array('id' => $individual->userid), 'username, firstname, lastname, email');
-            if (isset($user)) {
+            if (! empty($user)) {
                 echo format_string($user->username).',';
                 echo format_string($user->firstname).' '.format_string($user->lastname).',';
                 echo format_string($user->email).',';
@@ -129,7 +129,7 @@ $table->head = array($fullnamehd, $extraversionhd, $agreeablenesshd, $conscienti
 foreach ($individuals as $individual) {
     $user = $DB->get_record('user', array('id' => $individual->userid));
     $fullname = null;
-    if (isset($user)) {
+    if (! empty($user)) {
         $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => true));
     }
     else {
