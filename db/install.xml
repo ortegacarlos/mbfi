@@ -26,9 +26,9 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="mbfiid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The id of the mbfi that each instance belongs to."/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The id of each user."/>
-        <!--FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The username of each user."/-->
-        <!--FIELD NAME="fullname" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The fullname of each user."/-->
-        <!--FIELD NAME="email" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The email of each user."/-->
+        <FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The username of each user."/>
+        <FIELD NAME="fullname" TYPE="char" LENGTH="200" NOTNULL="true" SEQUENCE="false" COMMENT="The fullname of each user."/>
+        <FIELD NAME="email" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false" COMMENT="The email of each user."/>
         <FIELD NAME="extraversion" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the extraversion dimension."/>
         <FIELD NAME="agreeableness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the agreeableness dimension."/>
         <FIELD NAME="conscientiousness" TYPE="number" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" DECIMALS="4" COMMENT="Value for the conscientiousness dimension."/>
