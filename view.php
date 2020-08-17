@@ -91,16 +91,21 @@ if ($download == 'csv' && has_capability('mod/mbfi:downloaddata', $modulecontext
     if (isset($individuals)) {
         foreach ($individuals as $individual) {
             $user = $DB->get_record('user', array('id' => $individual->userid), 'username, firstname, lastname, email');
-            if (isset($user)){
+            if (isset($user)) {
                 echo format_string($user->username).',';
                 echo format_string($user->firstname).' '.format_string($user->lastname).',';
                 echo format_string($user->email).',';
-                echo format_string($individual->extraversion).',';
-                echo format_string($individual->agreeableness).',';
-                echo format_string($individual->conscientiousness).',';
-                echo format_string($individual->neuroticism).',';
-                echo format_string($individual->openness)."\n";
             }
+            else {
+                echo format_string($individual->username).',';
+                echo format_string($individual->fullname).',';
+                echo format_string($individual->email).',';
+            }
+            echo format_string($individual->extraversion).',';
+            echo format_string($individual->agreeableness).',';
+            echo format_string($individual->conscientiousness).',';
+            echo format_string($individual->neuroticism).',';
+            echo format_string($individual->openness)."\n";
         }
     }
     exit;
@@ -123,15 +128,22 @@ $opennesshd = get_string('opennesshd', 'mbfi');
 $table->head = array($fullnamehd, $extraversionhd, $agreeablenesshd, $conscientiousnesshd, $neuroticismhd, $opennesshd);
 foreach ($individuals as $individual) {
     $user = $DB->get_record('user', array('id' => $individual->userid));
+    $fullname = null;
     if (isset($user)) {
         $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => true));
-        $extraversion = $individual->extraversion;
-        $agreeableness = $individual->agreeableness;
-        $conscientiousness = $individual->conscientiousness;
-        $neuroticism = $individual->neuroticism;
-        $openness = $individual->openness;
-        $table->data[] = array($fullname, $extraversion, $agreeableness, $conscientiousness, $neuroticism, $openness);
     }
+    else {
+        $user = $DB->get_record('user', array('id' => 1));
+        $user->firstname = $individual->fullname;
+        $user->lastname = '';
+        $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => false));
+    }
+    $extraversion = $individual->extraversion;
+    $agreeableness = $individual->agreeableness;
+    $conscientiousness = $individual->conscientiousness;
+    $neuroticism = $individual->neuroticism;
+    $openness = $individual->openness;
+    $table->data[] = array($fullname, $extraversion, $agreeableness, $conscientiousness, $neuroticism, $openness);
 }
 
 echo html_writer::table($table);
