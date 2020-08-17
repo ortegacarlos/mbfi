@@ -77,32 +77,33 @@ function mbfi_add_instance($mbfi, $mform = null) {
 
     if(isset($mbfi->datasource)) {
         $datasource = $mbfi->datasource;
-        if($datasource == '0') {
-            if(! mbfi_save_file($path, $mform)) {
-                print_error('error');
-            }
+    }
 
-            if(! mbfi_check_file(45, $path)) {
-                mbfi_delete_file($path);
-                print_error('error');
-            }
-
-            $feedbackscompleted = mbfi_organize_file_data();
-
-            if(empty($feedbackscompleted)) {
-                mbfi_delete_file($path);
-                print_error('error');
-            }
+    if($datasource == '0') {
+        if(! mbfi_save_file($path, $mform)) {
+            print_error('error');
         }
-        else {
-            if(! mbfi_check_feedback_completed($mbfi->feedback)) {
-                $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
-                \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
-                print_error('error');
-            }
-        
-            $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
+
+        if(! mbfi_check_file(45, $path)) {
+            mbfi_delete_file($path);
+            print_error('error');
         }
+
+        $feedbackscompleted = mbfi_organize_file_data();
+
+        if(empty($feedbackscompleted)) {
+            mbfi_delete_file($path);
+            print_error('error');
+        }
+    }
+    else {
+        if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+            $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
+            \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
+            print_error('error');
+        }
+    
+        $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
     }
 
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
@@ -144,32 +145,33 @@ function mbfi_update_instance($mbfi, $mform = null) {
 
     if(isset($mbfi->datasource)) {
         $datasource = $mbfi->datasource;
-        if($datasource == '0') {
-            if(! mbfi_save_file($path, $mform)) {
-                print_error('error');
-            }
+    }
 
-            if(! mbfi_check_file(45, $path)) {
-                mbfi_delete_file($path);
-                print_error('error');
-            }
-
-            $feedbackscompleted = mbfi_organize_file_data();
-
-            if(empty($feedbackscompleted)) {
-                mbfi_delete_file($path);
-                print_error('error');
-            }
+    if($datasource == '0') {
+        if(! mbfi_save_file($path, $mform)) {
+            print_error('error');
         }
-        else {
-            if(! mbfi_check_feedback_completed($mbfi->feedback)) {
-                $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
-                \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
-                print_error('error');
-            }
-        
-            $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
+
+        if(! mbfi_check_file(45, $path)) {
+            mbfi_delete_file($path);
+            print_error('error');
         }
+
+        $feedbackscompleted = mbfi_organize_file_data();
+
+        if(empty($feedbackscompleted)) {
+            mbfi_delete_file($path);
+            print_error('error');
+        }
+    }
+    else {
+        if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+            $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
+            \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
+            print_error('error');
+        }
+    
+        $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
     }
 
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
@@ -232,7 +234,7 @@ function mbfi_delete_instance($id) {
  * Save a text file of the mod_mbfi.
  *
  * @param string $path Text file path.
- * @param mod_mgroup_mod_form $mform The form.
+ * @param mod_mbfi_mod_form $mform The form.
  * @return bool True if successful, false on failure.
  */
 function mbfi_save_file($path, $mform) {
