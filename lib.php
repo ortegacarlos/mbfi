@@ -24,6 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+//The content of the text file to be used in later functions
+global $MBFI_CONTENT_FILE;
+$MBFI_CONTENT_FILE = null;
+
 /**
  * Return if the plugin supports $feature.
  *
@@ -65,15 +69,42 @@ function mbfi_supports($feature) {
  * @return int The id of the newly inserted record.
  */
 function mbfi_add_instance($mbfi, $mform = null) {
-    global $DB;
+    global $DB, $CFG, $MBFI_CONTENT_FILE;
 
-    if(! mbfi_check_feedback_completed($mbfi->feedback)) {
-        $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
-        \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
-        print_error('error');
+    $path = $CFG->dataroot.'/temp/filestorage/mbfiuserfile_'.(time() + rand()).'.csv';
+    $feedbackscompleted = null;
+    $datasource = '0'; // data source file
+
+    if(isset($mbfi->datasource)) {
+        $datasource = $mbfi->datasource;
+        if($datasource == '0') {
+            if(! mbfi_save_file($path, $mform)) {
+                print_error('error');
+            }
+
+            if(! mbfi_check_file(45, $path)) {
+                mbfi_delete_file($path);
+                print_error('error');
+            }
+
+            $feedbackscompleted = mbfi_organize_file_data();
+
+            if(empty($feedbackscompleted)) {
+                mbfi_delete_file($path);
+                print_error('error');
+            }
+        }
+        else {
+            if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+                $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
+                \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
+                print_error('error');
+            }
+        
+            $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
+        }
     }
 
-    $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
@@ -86,6 +117,7 @@ function mbfi_add_instance($mbfi, $mform = null) {
         }
     }
     else {
+        \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
         print_error('error');
     }
 
@@ -169,6 +201,119 @@ function mbfi_delete_instance($id) {
 }
 
 /**
+ * Save a text file of the mod_mbfi.
+ *
+ * @param string $path Text file path.
+ * @param mod_mgroup_mod_form $mform The form.
+ * @return bool True if successful, false on failure.
+ */
+function mbfi_save_file($path, $mform) {
+
+    if(isset($path, $mform)) {
+        if($mform->save_file('userfile', $path, true)) {
+            return true;
+        }
+    }
+
+    \core\notification::error(get_string('err_savefile', 'mbfi'));
+    return false;
+}
+
+/**
+ * Delete a text file of the mod_bfi.
+ *
+ * @param string $path Text file path.
+ * @return bool True if successful, false on failure.
+ */
+function mbfi_delete_file($path) {
+
+    if(isset($path)) {
+        if(unlink($path)) {
+            return true;
+        }
+    }
+
+    \core\notification::error(get_string('err_deletefile', 'mbfi'));
+    return false;
+}
+
+/**
+ * Read a text file of the mod_mbfi.
+ *
+ * @param string $path Text file path.
+ * @return object Array if successful, null on failure.
+ */
+function mbfi_read_file($path) {
+    global $MBFI_CONTENT_FILE;
+
+    $answers = array();
+
+    if(isset($path)) {
+        if($content = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)) {
+            foreach($content as $line) {
+                $answers[] = explode(',', $line);
+            }
+            $header = array_shift($answers);
+            $MBFI_CONTENT_FILE = $answers;
+            return $answers;
+        }
+    }
+
+    \core\notification::error(get_string('err_readfile', 'mbfi'));
+    return null;
+}
+
+/**
+ * Check a text file of the mod_mbfi.
+ *
+ * @param int $answers Number of answers.
+ * @return boolean True if successful, false on failure.
+ */
+function mbfi_check_file($answers, $path) {
+
+    $content = mbfi_read_file($path);
+
+    if(isset($answers, $content)) {
+        $errrors = false;
+        foreach($content as $line_number => $line) {
+            if(! mbfi_check_answers($line, $answers)) {
+                $errrors = true;
+                \core\notification::error(get_string('err_checkparameters', 'mbfi', array('number' => $line_number + 1)));
+            }
+        }
+        if(! $errrors) {
+            return true;
+        }
+    }
+
+    \core\notification::error(get_string('err_checkfile', 'mbfi'));
+    return false;
+}
+
+/**
+ * Check the answers of each individual of the mod_mbfi.
+ *
+ * @param object $answers Array with answers.
+ * @param int $amountanswers Amount of answers.
+ * @return boolean True if successful, false on failure.
+ */
+function mbfi_check_answers($answers, $amountanswers) {
+
+    if(isset($answers, $amountanswers)) {
+        if($amountanswers != (count($answers) - 6)) {
+            return false;
+        }
+        for($i = 6; $i < count($answers); $i++) {
+            if(is_null($answers[$i])) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
  * Check if feedback is completed by at least one individual.
  *
  * @param int $feedbackid Id of the feedback instance.
@@ -186,9 +331,42 @@ function mbfi_check_feedback_completed($feedbackid) {
 }
 
 /**
+ * Organize user file data.
+ *
+ * @return object Array with data of each individual, null on failure.
+ */
+function mbfi_organize_file_data() {
+    global $MBFI_CONTENT_FILE;
+    $dataindividuals = array();
+
+    if(! empty($MBFI_CONTENT_FILE)) {
+        foreach($MBFI_CONTENT_FILE as $line) {
+            $data = new stdClass();
+            $data->amountanswers = 45;
+            $data->fullname = str_replace('"', '', $line[0]);
+            $data->email = $line[2];
+            $data->answers = array();
+            $line[6] = ($line[6] == 'Si') ? '1' : '2';
+            for($i = 6; $i < count($line); $i++) {
+                $answer = new stdClass();
+                $answer->value = $line[$i];
+                $data->answers[] = $answer;
+            }
+    
+            $dataindividuals[] = $data;
+        }
+    
+        return $dataindividuals;
+    }
+    
+    \core\notification::error(get_string('err_organizefiledata', 'mbfi'));
+    return null;
+}
+
+/**
  * Calculate the five dimensions of each individual.
  *
- * @param object $feedbackscompleted Array of the feedback completed.
+ * @param object $feedbackscompleted Array of the feedback completed or data file.
  * @return object Array with the values of each dimension, null otherwise.
  */
 function mbfi_calculate_dimensions($feedbackscompleted) {
@@ -196,21 +374,39 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
 
     if(! empty($feedbackscompleted)) {
         $datavalues = array();
+        $userid = null;
+        $username = null;
+        $fullname = null;
+        $email = null;
         foreach($feedbackscompleted as $feedbackcompleted) {
-            $countanswers = $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id));
-            //$username = $DB->get_field('user', 'username', array('id' => $feedbackcompleted->userid));
-            $firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
-            $lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
-            if($countanswers == 45) {
-                $answers = $DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id));
-                $results = mbfi_organize_values(array_values($answers));
+            $amountanswers = (isset($feedbackcompleted->id)) ? $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id)) : $feedbackcompleted->amountanswers;
+            if(isset($feedbackcompleted->userid)) {
+                $userid = $feedbackcompleted->userid;
+                $datauser = $DB->get_record('user', array('id' => $userid));
+                $username = $datauser->username;
+                //$username = $DB->get_field('user', 'username', array('id' => $feedbackcompleted->userid));
+                //$firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
+                //$lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
+                $fullname = $datauser->firstname.' '.$datauser->lastname;
+                $email = $datauser->email;
+            }
+            else {
+                $userid = 0;
+                $username = '0';
+                $fullname = $feedbackcompleted->fullname;
+                $email = $feedbackcompleted->email;
+            }
+            if($amountanswers == 45) {
+                $answers = (isset($feedbackcompleted->id)) ? array_values($DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id))) : $feedbackcompleted->answers;
+                $results = mbfi_organize_values($answers);
                 if(! empty($results)) {
                     $dimension = mbfi_calculate_values($results);
                     $data = new stdClass();
                     $data->mbfiid = null;
-                    $data->userid = $feedbackcompleted->userid;
-                    //$data->username = $username;
-                    //$data->fullname = $firstname.' '.$lastname;
+                    $data->userid = $userid;
+                    $data->username = $username;
+                    $data->fullname = $fullname;
+                    $data->email = $email;
                     $data->extraversion = $dimension->extraversion;
                     $data->agreeableness = $dimension->agreeableness;
                     $data->conscientiousness = $dimension->conscientiousness;
@@ -249,7 +445,7 @@ function mbfi_organize_values($answers) {
     $dimensions->openness = array();
 
     if($answers[0]->value == '1') {
-        for ($i=1; $i < sizeof($answers); $i++) { 
+        for ($i=1; $i < count($answers); $i++) { 
             switch ($i) {
                 case 1 : case 6: case 11: case 16: case 27: case 32: case 40: case 43:
                     switch ($i) {
