@@ -177,19 +177,14 @@ function mbfi_update_instance($mbfi, $mform = null) {
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
     if(isset($dimensionsdata)) {
+        $individualsdimensions = $DB->get_records('mbfi_characteristic_values', array('mbfiid' => $mbfi->instance));
+        foreach($individualsdimensions as $individualdimensions) {
+            $DB->delete_records('mbfi_characteristic_values', array('id' => $individualdimensions->id));
+        }
         foreach($dimensionsdata as $dimensiondata) {
-            $individualdimensions = $DB->get_record('mbfi_characteristic_values', array('mbfiid' => $mbfi->instance, 'userid' => $dimensiondata->userid, 'username' => $dimensiondata->username));
-            if (! empty($individualdimensions)) {
-                $individualdimensions->mbfiid = $mbfi->instance;
-                $individualdimensions->fullname = $dimensiondata->fullname;
-                $individualdimensions->timemodified = time();
-                $DB->update_record('mbfi_characteristic_values', $individualdimensions);
-            }
-            else {
-                $dimensiondata->mbfiid = $mbfi->instance;
-                $dimensiondata->timecreated = time();
-                $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
-            }
+            $dimensiondata->mbfiid = $mbfi->instance;
+            $dimensiondata->timecreated = time();
+            $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
         }
     }
     else {
@@ -376,7 +371,7 @@ function mbfi_organize_file_data() {
             $data->fullname = str_replace('"', '', $line[0]);
             $data->email = $line[2];
             $data->answers = array();
-            $line[6] = ($line[6] == 'Si') ? '1' : '2';
+            $line[6] = ($line[6] == 'Si' || $line[6] == 'Yes') ? '1' : '2';
             for($i = 6; $i < count($line); $i++) {
                 $answer = new stdClass();
                 $answer->value = $line[$i];
@@ -414,15 +409,12 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
                 $userid = $feedbackcompleted->userid;
                 $datauser = $DB->get_record('user', array('id' => $userid));
                 $username = $datauser->username;
-                //$username = $DB->get_field('user', 'username', array('id' => $feedbackcompleted->userid));
-                //$firstname = $DB->get_field('user', 'firstname', array('id' => $feedbackcompleted->userid));
-                //$lastname = $DB->get_field('user', 'lastname', array('id' => $feedbackcompleted->userid));
                 $fullname = $datauser->firstname.' '.$datauser->lastname;
                 $email = $datauser->email;
             }
             else {
-                $userid = 0;
-                $username = ($index + 100);
+                $userid = 0 - ($index + 1);
+                $username = substr(str_shuffle('0123456789'), 0, 8);
                 $fullname = $feedbackcompleted->fullname;
                 $email = $feedbackcompleted->email;
             }
