@@ -27,9 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Resultados BFI';
 $string['modulename'] = 'Resultados BFI';
-$string['modulename_help'] = 'El módulo "Resultados BFI" permite procesar las respuestas dadas a través de una actividad tipo Encuesta, al “Big-Five Inventory”, el cual es una adaptación al español del instrumento psicométrico "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998) para la medición de rasgos de la personalidad.';
-
-//Previamente los integrantes del curso deben haber diligenciado una actividad de tipo encuesta con las preguntas del "Big Five Questionnaire", cuyas respuestas serán tomadas para medir los rasgos de personalidad de los individuos.';
+$string['modulename_help'] = 'El módulo "Resultados BFI" permite procesar las respuestas dadas a través de una actividad tipo Encuesta, al “Big-Five Inventory”, el cual es una adaptación del instrumento psicométrico "Big Five Questionnaire", realizada por (Benet-Martínez & John, 1998) para la medición de rasgos de la personalidad.';
 $string['modulenameplural'] = 'Resultados BFI';
 
 $string['mbfiname'] = 'Nombre';
@@ -48,10 +46,9 @@ $string['feedbackar'] = 'Seleccione una encuesta';
 $string['feedbackar_help'] = 'Escoja la encuesta para procesar sus respuestas y medir los rasgos de personalidad de los individuos que han diligenciado completamente la misma.';
 
 $string['userfile'] = 'Archivo de datos';
-$string['userfile_help'] = 'Campo para cargar un archivo de texto plano, con valores separados por comas (.csv), que almacena los datos de una actividad tipo Encuesta del "Big-Five Inventory".';
+$string['userfile_help'] = 'Campo para cargar un archivo de texto plano, con valores separados por comas (*.csv), que almacena los datos de una actividad tipo Encuesta del "Big-Five Inventory".';
 
 // Add string errors
-//$string['err_recordsfeedback'] = 'No se encontraron encuestas en el curso.';
 $string['err_feedbackcompleted'] = 'Ningún individuo ha completado la encuesta "{$a->name}".';
 $string['err_answerscounting'] = 'El usuario "{$a->fullname}" aún no ha completado el cuestionario.';
 $string['err_nonefeedback'] = 'No se ha seleccionado una encuesta.';
