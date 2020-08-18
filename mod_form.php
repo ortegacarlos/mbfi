@@ -65,10 +65,8 @@ class mod_mbfi_mod_form extends moodleform_mod {
         if(! empty($recordsfeedback)) {
             $options = array();
             foreach($recordsfeedback as $recordfeedback) {
-                //$feedback[] = $mform->createElement('radio', 'feedback', '', $recordfeedback->name, (int)$recordfeedback->id, null);
                 $options[(int)$recordfeedback->id] = $recordfeedback->name;
             }
-            //$options[0] = get_string('uploadfile', 'mbfi');
             $datasource[] = $mform->createElement('radio', 'datasource', '', get_string('feedback', 'mbfi'), 1, null);
             $datasource[] = $mform->createElement('radio', 'datasource', '', get_string('uploadfile', 'mbfi'), 0, null);
             $mform->addGroup($datasource, 'datasourcear', get_string('datasource', 'mbfi'), array('<br />'), false);
@@ -76,32 +74,9 @@ class mod_mbfi_mod_form extends moodleform_mod {
             $mform->setDefault('datasource', $datasource[0]->_attributes['value']);
             $feedback = $mform->addElement('select', 'feedback', get_string('feedbackar', 'mbfi'), $options, null);
             $feedback->setSelected(array_key_first($options));
-            //$mform->addRule('feedback', null, 'required', null, 'client');
             $mform->addHelpButton('feedback', 'feedbackar', 'mbfi');
             $mform->hideIf('feedback', 'datasource', 'neq', 1);
-            //$feedback[] = $mform->createElement('radio', 'feedback', '', get_string('uploadfile', 'mbfi'), 0, null);
-            //$mform->addGroup($feedback, 'feedbackar', get_string('feedbackar', 'mbfi'), array('<br />'), false);
-            //$mform->addRule('feedbackar', null, 'required', null, 'client');
-            //$mform->setDefault('feedback', $feedback[0]->_attributes['value']);
-            //$feedback[0]->setSelected(array_key_first($options));
-            //$mform->addHelpButton('feedbackar', 'feedbackar', 'mbfi');
         }
-        /*else {
-            $alert = '<div id="form-id-feedback" class="form-group row fitem">';
-            $alert .= '<div class="col-md-3"></div>';
-            $alert .= '<div class="col-md-9 form-inline">';
-            $alert .= '<span class="notifications" id="user-notifications">';
-            $alert .= '<div class="alert alert-info alert-dismissible fade show" role="alert" data-aria-autofocus="false" tabindex="0">';
-            $alert .= get_string('err_recordsfeedback', 'mbfi');
-            $alert .= '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
-            $alert .= '<span aria-hidden="true">&times;</span>';
-            $alert .= '</button>';
-            $alert .= '</div>';
-            $alert .= '</span>';
-            $alert .= '</div>';
-            $alert .= '</div>';
-            $mform->addElement('html', $alert);
-        }*/
 
         // Adding the "userfile" field
         $mform->addElement('filepicker', 'userfile', get_string('userfile', 'mbfi'), null,

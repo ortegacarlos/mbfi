@@ -63,7 +63,6 @@ if ($download !== '') {
     $url->param('download', $download);
 }
 
-//$PAGE->set_url('/mod/mbfi/view.php', array('id' => $cm->id));
 $PAGE->set_url($url);
 
 $individuals = $DB->get_records('mbfi_characteristic_values', array('mbfiid' => $moduleinstance->id));
