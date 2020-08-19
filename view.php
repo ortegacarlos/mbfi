@@ -37,7 +37,7 @@ if ($id) {
     $course         = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('mbfi', array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($m) {
-    $moduleinstance = $DB->get_record('mbfi', array('id' => $m), '*', MUST_EXIST); //Cambio $n por $m
+    $moduleinstance = $DB->get_record('mbfi', array('id' => $m), '*', MUST_EXIST);
     $course         = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm             = get_coursemodule_from_instance('mbfi', $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
@@ -90,7 +90,7 @@ if ($download == 'csv' && has_capability('mod/mbfi:downloaddata', $modulecontext
     if (isset($individuals)) {
         foreach ($individuals as $individual) {
             $user = $DB->get_record('user', array('id' => $individual->userid), 'username, firstname, lastname, email');
-            if (! empty($user)) {
+            if (!empty($user)) {
                 echo format_string($user->username).',';
                 echo format_string($user->firstname).' '.format_string($user->lastname).',';
                 echo format_string($user->email).',';
@@ -128,7 +128,7 @@ $table->head = array($fullnamehd, $extraversionhd, $agreeablenesshd, $conscienti
 foreach ($individuals as $individual) {
     $user = $DB->get_record('user', array('id' => $individual->userid));
     $fullname = null;
-    if (! empty($user)) {
+    if (!empty($user)) {
         $fullname = $OUTPUT->user_picture($user, array('courseid' => $course->id, 'size' => 50, 'popup' => true, 'includefullname' => true, 'link' => true));
     }
     else {
@@ -147,7 +147,7 @@ foreach ($individuals as $individual) {
 
 echo html_writer::table($table);
 
-if (! empty($individuals) && has_capability('mod/mbfi:downloaddata', $modulecontext)) {
+if (!empty($individuals) && has_capability('mod/mbfi:downloaddata', $modulecontext)) {
     $downloadoptions = array();
     $options = array();
     $options['id'] = "$cm->id";

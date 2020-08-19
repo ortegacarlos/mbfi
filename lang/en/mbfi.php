@@ -37,7 +37,7 @@ $string['nonewmodules'] = 'No hay intancias de la actividad Resultados BFI.';
 
 // Add string by form
 $string['datasource'] = 'Seleccione una opción';
-$string['datasource_help'] = 'Seleccione una opción si desea procesar las respuestas obtenidas del módulo "M-BFI", de lo contrario seleccione la opción "Subir archivo" para procesar sus respuestas.';
+$string['datasource_help'] = 'Seleccione una opción si desea procesar las respuestas obtenidas de una actividad tipo Encuesta, al “Big-Five Inventory”, de lo contrario seleccione la opción "Subir archivo" para procesar sus respuestas.';
 
 $string['feedback'] = 'Encuesta previa';
 $string['uploadfile'] = 'Subir archivo';

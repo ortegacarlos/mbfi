@@ -55,12 +55,12 @@ class backup_mbfi_activity_task extends backup_activity_task {
         $base = preg_quote($CFG->wwwroot,"/");
 
         // Link to the list of mbfis
-        $search="/(".$base."\/mod\/mbfi\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@MBFIINDEX*$2@$', $content);
+        $search = "/(".$base."\/mod\/mbfi\/index.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@MBFIINDEX*$2@$', $content);
 
         // Link to mbfi view by moduleid
-        $search="/(".$base."\/mod\/mbfi\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@MBFIVIEWBYID*$2@$', $content);
+        $search = "/(".$base."\/mod\/mbfi\/view.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@MBFIVIEWBYID*$2@$', $content);
 
         return $content;
     }

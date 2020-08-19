@@ -75,29 +75,28 @@ function mbfi_add_instance($mbfi, $mform = null) {
     $feedbackscompleted = null;
     $datasource = '0'; // data source file
 
-    if(isset($mbfi->datasource)) {
+    if (isset($mbfi->datasource)) {
         $datasource = $mbfi->datasource;
     }
 
-    if($datasource == '0') {
-        if(! mbfi_save_file($path, $mform)) {
+    if ($datasource == '0') {
+        if (!mbfi_save_file($path, $mform)) {
             print_error('error');
         }
 
-        if(! mbfi_check_file(45, $path)) {
+        if (!mbfi_check_file(45, $path)) {
             mbfi_delete_file($path);
             print_error('error');
         }
 
         $feedbackscompleted = mbfi_organize_file_data();
 
-        if(empty($feedbackscompleted)) {
+        if (empty($feedbackscompleted)) {
             mbfi_delete_file($path);
             print_error('error');
         }
-    }
-    else {
-        if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+    } else {
+        if (!mbfi_check_feedback_completed($mbfi->feedback)) {
             $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
             \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
             print_error('error');
@@ -108,21 +107,22 @@ function mbfi_add_instance($mbfi, $mform = null) {
 
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
-    if(isset($dimensionsdata)) {
+    if (isset($dimensionsdata)) {
         $mbfi->timecreated = time();
         $mbfi->id = $DB->insert_record('mbfi', $mbfi);
-        foreach($dimensionsdata as $dimensiondata) {
+        foreach ($dimensionsdata as $dimensiondata) {
             $dimensiondata->mbfiid = $mbfi->id;
             $dimensiondata->timecreated = time();
             $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
         }
-    }
-    else {
+    } else {
+        mbfi_delete_file($path);
         \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
         print_error('error');
     }
 
-    //file_put_contents($CFG->dataroot.'/temp/filestorage/resultscreate.json', json_encode($results));
+    mbfi_delete_file($path);
+
     return $mbfi->id;
 }
 
@@ -141,31 +141,30 @@ function mbfi_update_instance($mbfi, $mform = null) {
 
     $path = $CFG->dataroot.'/temp/filestorage/mbfiuserfile_'.(time() + rand()).'.csv';
     $feedbackscompleted = null;
-    $datasource = '0'; // data source file
+    $datasource = '0';
 
-    if(isset($mbfi->datasource)) {
+    if (isset($mbfi->datasource)) {
         $datasource = $mbfi->datasource;
     }
 
-    if($datasource == '0') {
-        if(! mbfi_save_file($path, $mform)) {
+    if ($datasource == '0') {
+        if (!mbfi_save_file($path, $mform)) {
             print_error('error');
         }
 
-        if(! mbfi_check_file(45, $path)) {
+        if (!mbfi_check_file(45, $path)) {
             mbfi_delete_file($path);
             print_error('error');
         }
 
         $feedbackscompleted = mbfi_organize_file_data();
 
-        if(empty($feedbackscompleted)) {
+        if (empty($feedbackscompleted)) {
             mbfi_delete_file($path);
             print_error('error');
         }
-    }
-    else {
-        if(! mbfi_check_feedback_completed($mbfi->feedback)) {
+    } else {
+        if (!mbfi_check_feedback_completed($mbfi->feedback)) {
             $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
             \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
             print_error('error');
@@ -176,25 +175,26 @@ function mbfi_update_instance($mbfi, $mform = null) {
 
     $dimensionsdata = mbfi_calculate_dimensions($feedbackscompleted);
     
-    if(isset($dimensionsdata)) {
+    if (isset($dimensionsdata)) {
         $individualsdimensions = $DB->get_records('mbfi_characteristic_values', array('mbfiid' => $mbfi->instance));
-        foreach($individualsdimensions as $individualdimensions) {
+        foreach ($individualsdimensions as $individualdimensions) {
             $DB->delete_records('mbfi_characteristic_values', array('id' => $individualdimensions->id));
         }
-        foreach($dimensionsdata as $dimensiondata) {
+        foreach ($dimensionsdata as $dimensiondata) {
             $dimensiondata->mbfiid = $mbfi->instance;
             $dimensiondata->timecreated = time();
             $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
         }
-    }
-    else {
+    } else {
+        mbfi_delete_file($path);
         \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
         print_error('error');
     }
 
-    //file_put_contents($CFG->dataroot.'/temp/filestorage/resultsupdate.json', json_encode($results));
+    mbfi_delete_file($path);
     $mbfi->id = $mbfi->instance;
     $mbfi->timemodified = time();
+
     return $DB->update_record('mbfi', $mbfi);
 }
 
@@ -207,7 +207,7 @@ function mbfi_update_instance($mbfi, $mform = null) {
 function mbfi_delete_instance($id) {
     global $DB;
 
-    if (! $mbfi = $DB->get_record('mbfi', array('id' => $id))) {
+    if (!$mbfi = $DB->get_record('mbfi', array('id' => $id))) {
         return false;
     }
 
@@ -215,10 +215,10 @@ function mbfi_delete_instance($id) {
 
     // Delete any dependent records here.
 
-    if(! $DB->delete_records('mbfi', array('id' => $id))) {
+    if (!$DB->delete_records('mbfi', array('id' => $id))) {
         $result = false;
     }
-    if(! $DB->delete_records('mbfi_characteristic_values', array('mbfiid' => $id))) {
+    if (!$DB->delete_records('mbfi_characteristic_values', array('mbfiid' => $id))) {
         $result = false;
     }
 
@@ -234,8 +234,8 @@ function mbfi_delete_instance($id) {
  */
 function mbfi_save_file($path, $mform) {
 
-    if(isset($path, $mform)) {
-        if($mform->save_file('userfile', $path, true)) {
+    if (isset($path, $mform)) {
+        if ($mform->save_file('userfile', $path, true)) {
             return true;
         }
     }
@@ -252,8 +252,8 @@ function mbfi_save_file($path, $mform) {
  */
 function mbfi_delete_file($path) {
 
-    if(isset($path)) {
-        if(unlink($path)) {
+    if (isset($path)) {
+        if (unlink($path)) {
             return true;
         }
     }
@@ -273,9 +273,9 @@ function mbfi_read_file($path) {
 
     $answers = array();
 
-    if(isset($path)) {
-        if($content = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)) {
-            foreach($content as $line) {
+    if (isset($path)) {
+        if ($content = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)) {
+            foreach ($content as $line) {
                 $answers[] = explode(',', $line);
             }
             $header = array_shift($answers);
@@ -298,15 +298,15 @@ function mbfi_check_file($answers, $path) {
 
     $content = mbfi_read_file($path);
 
-    if(isset($answers, $content)) {
+    if (isset($answers, $content)) {
         $errrors = false;
-        foreach($content as $line_number => $line) {
-            if(! mbfi_check_answers($line, $answers)) {
+        foreach ($content as $line_number => $line) {
+            if (!mbfi_check_answers($line, $answers)) {
                 $errrors = true;
                 \core\notification::error(get_string('err_checkparameters', 'mbfi', array('number' => $line_number + 1)));
             }
         }
-        if(! $errrors) {
+        if (!$errrors) {
             return true;
         }
     }
@@ -324,12 +324,12 @@ function mbfi_check_file($answers, $path) {
  */
 function mbfi_check_answers($answers, $amountanswers) {
 
-    if(isset($answers, $amountanswers)) {
-        if($amountanswers != (count($answers) - 6)) {
+    if (isset($answers, $amountanswers)) {
+        if ($amountanswers != (count($answers) - 6)) {
             return false;
         }
-        for($i = 6; $i < count($answers); $i++) {
-            if(is_null($answers[$i])) {
+        for ($i = 6; $i < count($answers); $i++) {
+            if (is_null($answers[$i])) {
                 return false;
             }
         }
@@ -347,7 +347,7 @@ function mbfi_check_answers($answers, $amountanswers) {
 function mbfi_check_feedback_completed($feedbackid) {
     global $DB;
 
-    if (! empty($feedbackid)) {
+    if (!empty($feedbackid)) {
         return $DB->record_exists('feedback_completed', array('feedback' => $feedbackid));
     }
 
@@ -364,15 +364,15 @@ function mbfi_organize_file_data() {
     global $MBFI_CONTENT_FILE;
     $dataindividuals = array();
 
-    if(! empty($MBFI_CONTENT_FILE)) {
-        foreach($MBFI_CONTENT_FILE as $line) {
+    if (!empty($MBFI_CONTENT_FILE)) {
+        foreach ($MBFI_CONTENT_FILE as $line) {
             $data = new stdClass();
             $data->amountanswers = 45;
             $data->fullname = str_replace('"', '', $line[0]);
             $data->email = $line[2];
             $data->answers = array();
             $line[6] = ($line[6] == 'Si' || $line[6] == 'Yes') ? '1' : '2';
-            for($i = 6; $i < count($line); $i++) {
+            for ($i = 6; $i < count($line); $i++) {
                 $answer = new stdClass();
                 $answer->value = $line[$i];
                 $data->answers[] = $answer;
@@ -397,31 +397,30 @@ function mbfi_organize_file_data() {
 function mbfi_calculate_dimensions($feedbackscompleted) {
     global $DB;
 
-    if(! empty($feedbackscompleted)) {
+    if (!empty($feedbackscompleted)) {
         $datavalues = array();
         $userid = null;
         $username = null;
         $fullname = null;
         $email = null;
-        foreach($feedbackscompleted as $index => $feedbackcompleted) {
+        foreach ($feedbackscompleted as $index => $feedbackcompleted) {
             $amountanswers = (isset($feedbackcompleted->id)) ? $DB->count_records('feedback_value', array('completed' => $feedbackcompleted->id)) : $feedbackcompleted->amountanswers;
-            if(isset($feedbackcompleted->userid)) {
+            if (isset($feedbackcompleted->userid)) {
                 $userid = $feedbackcompleted->userid;
                 $datauser = $DB->get_record('user', array('id' => $userid));
                 $username = $datauser->username;
                 $fullname = $datauser->firstname.' '.$datauser->lastname;
                 $email = $datauser->email;
-            }
-            else {
+            } else {
                 $userid = 0 - ($index + 1);
                 $username = substr(str_shuffle('0123456789'), 0, 8);
                 $fullname = $feedbackcompleted->fullname;
                 $email = $feedbackcompleted->email;
             }
-            if($amountanswers == 45) {
+            if ($amountanswers == 45) {
                 $answers = (isset($feedbackcompleted->id)) ? array_values($DB->get_records('feedback_value', array('completed' => $feedbackcompleted->id))) : $feedbackcompleted->answers;
                 $results = mbfi_organize_values($answers);
-                if(! empty($results)) {
+                if (!empty($results)) {
                     $dimension = mbfi_calculate_values($results);
                     $data = new stdClass();
                     $data->mbfiid = null;
@@ -438,8 +437,7 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
                     $data->timemodified = 0;
                     $datavalues[] = $data;
                 }
-            }
-            else {
+            } else {
                 \core\notification::error(get_string('err_answerscounting', 'mbfi', array('fullname' => $firstname.' '.$lastname)));
                 return null;
             }
@@ -466,7 +464,7 @@ function mbfi_organize_values($answers) {
     $dimensions->neuroticism = array();
     $dimensions->openness = array();
 
-    if($answers[0]->value == '1') {
+    if ($answers[0]->value == '1') {
         for ($i=1; $i < count($answers); $i++) { 
             switch ($i) {
                 case 1 : case 6: case 11: case 16: case 27: case 32: case 40: case 43:
@@ -538,7 +536,7 @@ function mbfi_organize_values($answers) {
  */
 function mbfi_calculate_values($dimensionsvalues) {
 
-    if(! empty($dimensionsvalues)) {
+    if (!empty($dimensionsvalues)) {
         $dimension = new stdClass();
         $dimension->extraversion = number_format((array_sum($dimensionsvalues->extraversion) / sizeof($dimensionsvalues->extraversion)), 4);
         $dimension->agreeableness = number_format((array_sum($dimensionsvalues->agreeableness) / sizeof($dimensionsvalues->agreeableness)), 4);

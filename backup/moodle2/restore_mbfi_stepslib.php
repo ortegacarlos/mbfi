@@ -35,7 +35,7 @@ class restore_mbfi_activity_structure_step extends restore_activity_structure_st
         $paths = array();
 
         $paths[] = new restore_path_element('mbfi', '/activity/mbfi');
-        $paths[] = new restore_path_element('mbfi_individual', '/activity/mbfi/individuals/individual');
+        $paths[] = new restore_path_element('mbfi_characteristic_value', '/activity/mbfi/characteristic_values/characteristic_value');
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -57,7 +57,7 @@ class restore_mbfi_activity_structure_step extends restore_activity_structure_st
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_mbfi_individual($data) {
+    protected function process_mbfi_characteristic_value($data) {
         global $DB;
 
         $data = (object)$data;

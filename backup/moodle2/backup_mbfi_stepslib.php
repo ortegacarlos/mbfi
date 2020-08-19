@@ -40,8 +40,8 @@ class backup_mbfi_activity_structure_step extends backup_activity_structure_step
         $characteristic_values = new backup_nested_element('characteristic_values');
 
         $characteristic_value = new backup_nested_element('characteristic_value', array('id'), array(
-            'mbfiid', 'userid', 'extraversion', 'agreeableness', 'conscientiousness', 'neuroticism', 'openness',
-            'timecreated', 'timemodified'));
+            'userid', 'username', 'fullname', 'email', 'extraversion', 'agreeableness',
+            'conscientiousness', 'neuroticism', 'openness', 'timecreated', 'timemodified'));
 
         // Build the tree
         $mbfi->add_child($characteristic_values);
@@ -55,6 +55,8 @@ class backup_mbfi_activity_structure_step extends backup_activity_structure_step
             FROM    {mbfi_characteristic_values}
             WHERE   mbfiid = ?',
             array(backup::VAR_PARENTID));
+
+        // Define id annotations
 
         // Define file annotations
         $mbfi->annotate_files('mod_mbfi', 'intro', null); // This file area hasn't itemid

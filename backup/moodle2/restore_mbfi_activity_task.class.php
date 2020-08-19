@@ -84,9 +84,7 @@ class restore_mbfi_activity_task extends restore_activity_task {
         $rules[] = new restore_log_rule('mbfi', 'add', 'view.php?id={course_module}', '{mbfi}');
         $rules[] = new restore_log_rule('mbfi', 'update', 'view.php?id={course_module}', '{mbfi}');
         $rules[] = new restore_log_rule('mbfi', 'view', 'view.php?id={course_module}', '{mbfi}');
-        $rules[] = new restore_log_rule('mbfi', 'choose', 'view.php?id={course_module}', '{mbfi}');
-        $rules[] = new restore_log_rule('mbfi', 'choose again', 'view.php?id={course_module}', '{mbfi}');
-        $rules[] = new restore_log_rule('mbfi', 'report', 'report.php?id={course_module}', '{mbfi}');
+        $rules[] = new restore_log_rule('mbfi', 'download', 'view.php?id={course_module}', '{mbfi}');
 
         return $rules;
     }

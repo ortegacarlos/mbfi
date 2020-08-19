@@ -71,6 +71,7 @@ class mod_mbfi_mod_form extends moodleform_mod {
             $datasource[] = $mform->createElement('radio', 'datasource', '', get_string('uploadfile', 'mbfi'), 0, null);
             $mform->addGroup($datasource, 'datasourcear', get_string('datasource', 'mbfi'), array('<br />'), false);
             $mform->addHelpButton('datasourcear', 'datasource', 'mbfi');
+            $mform->addRule('datasourcear', null, 'required', null, 'client');
             $mform->setDefault('datasource', $datasource[0]->_attributes['value']);
             $feedback = $mform->addElement('select', 'feedback', get_string('feedbackar', 'mbfi'), $options, null);
             $feedback->setSelected(array_key_first($options));
