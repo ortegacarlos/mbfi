@@ -73,7 +73,7 @@ function mbfi_add_instance($mbfi, $mform = null) {
 
     $path = $CFG->dataroot.'/temp/filestorage/mbfiuserfile_'.(time() + rand()).'.csv';
     $feedbackscompleted = null;
-    $datasource = '0'; // data source file
+    $datasource = '0';
 
     if (isset($mbfi->datasource)) {
         $datasource = $mbfi->datasource;
@@ -121,7 +121,9 @@ function mbfi_add_instance($mbfi, $mform = null) {
         print_error('error');
     }
 
-    mbfi_delete_file($path);
+    if (!mbfi_delete_file($path)) {
+        print_error('error');
+    }
 
     return $mbfi->id;
 }
@@ -191,7 +193,9 @@ function mbfi_update_instance($mbfi, $mform = null) {
         print_error('error');
     }
 
-    mbfi_delete_file($path);
+    if (!mbfi_delete_file($path)) {
+        print_error('error');
+    }
     $mbfi->id = $mbfi->instance;
     $mbfi->timemodified = time();
 
