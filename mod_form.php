@@ -60,8 +60,10 @@ class mod_mbfi_mod_form extends moodleform_mod {
 
         // Adding grouping feedback.
         $datasource = array();
-        $course = $DB->get_record('course', array('id' => $COURSE->id), '*', MUST_EXIST);
-        $recordsfeedback = get_all_instances_in_course('feedback', $course);
+        if ($DB->record_exists('modules', array('name' => 'feedback'))) {
+            $course = $DB->get_record('course', array('id' => $COURSE->id), '*', MUST_EXIST);
+            $recordsfeedback = get_all_instances_in_course('feedback', $course);
+        }
         if(! empty($recordsfeedback)) {
             $options = array();
             foreach($recordsfeedback as $recordfeedback) {

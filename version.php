@@ -30,5 +30,5 @@ $plugin->version = 2020022800;
 $plugin->requires = 2015111600;
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->dependencies = array(
-    'mod_feedback' => 2015111600 // The Feedback enrolment plugin version 2015111600 or higher must be present.
+    //'mod_feedback' => 2015111600 // The Feedback enrolment plugin version 2015111600 or higher must be present.
 );
