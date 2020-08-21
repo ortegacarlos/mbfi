@@ -116,13 +116,17 @@ function mbfi_add_instance($mbfi, $mform = null) {
             $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
         }
     } else {
-        mbfi_delete_file($path);
+        if (file_exists($path)) {
+            mbfi_delete_file($path);
+        }
         \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
         print_error('error');
     }
 
-    if (!mbfi_delete_file($path)) {
-        print_error('error');
+    if (file_exists($path)) {
+        if (!mbfi_delete_file($path)) {
+            print_error('error');
+        }
     }
 
     return $mbfi->id;
@@ -188,13 +192,17 @@ function mbfi_update_instance($mbfi, $mform = null) {
             $DB->insert_record('mbfi_characteristic_values', $dimensiondata);
         }
     } else {
-        mbfi_delete_file($path);
+        if (file_exists($path)) {
+            mbfi_delete_file($path);
+        }
         \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
         print_error('error');
     }
 
-    if (!mbfi_delete_file($path)) {
-        print_error('error');
+    if (file_exists($path)) {
+        if (!mbfi_delete_file($path)) {
+            print_error('error');
+        }
     }
     $mbfi->id = $mbfi->instance;
     $mbfi->timemodified = time();
