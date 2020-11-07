@@ -69,7 +69,7 @@ function mbfi_supports($feature) {
  * @return int The id of the newly inserted record.
  */
 function mbfi_add_instance($mbfi, $mform = null) {
-    global $DB, $CFG, $MBFI_CONTENT_FILE;
+    global $DB, $CFG;
 
     $path = $CFG->dataroot.'/temp/filestorage/mbfiuserfile_'.(time() + rand()).'.csv';
     $feedbackscompleted = null;
@@ -143,7 +143,7 @@ function mbfi_add_instance($mbfi, $mform = null) {
  * @return bool True if successful, false otherwise.
  */
 function mbfi_update_instance($mbfi, $mform = null) {
-    global $DB, $CFG, $MBFI_CONTENT_FILE;
+    global $DB, $CFG;
 
     $path = $CFG->dataroot.'/temp/filestorage/mbfiuserfile_'.(time() + rand()).'.csv';
     $feedbackscompleted = null;
@@ -219,7 +219,7 @@ function mbfi_update_instance($mbfi, $mform = null) {
 function mbfi_delete_instance($id) {
     global $DB;
 
-    if (!$mbfi = $DB->get_record('mbfi', array('id' => $id))) {
+    if (!$DB->get_record('mbfi', array('id' => $id))) {
         return false;
     }
 

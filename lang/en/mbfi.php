@@ -68,3 +68,4 @@ $string['conscientiousnesshd'] = 'C';
 $string['neuroticismhd'] = 'N';
 $string['opennesshd'] = 'O';
 $string['downloadcsv'] = 'Descargar en formato CSV';
+$string['downloadcsv_title'] = 'Descargar en formato CSV los resultados del grupo.';

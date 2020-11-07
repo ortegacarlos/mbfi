@@ -153,6 +153,21 @@ if (!empty($individuals) && has_capability('mod/mbfi:downloaddata', $moduleconte
     $options['id'] = "$cm->id";
     $options['download'] = 'csv';
     $button =  $OUTPUT->single_button(new moodle_url('view.php', $options), get_string('downloadcsv', 'mbfi'));
+
+    $content = new DOMDocument();
+    $content->preserveWhiteSpace = FALSE;
+    $content->loadHTML($button);
+    $downloadButtons = $content->getElementsByTagName('button');
+    foreach ($downloadButtons as $downloadButton) {
+        $downloadButton->setAttribute('class', 'btn btn-primary');
+        $downloadButton->setAttribute('title', get_string('downloadcsv_title', 'mbfi'));
+    }
+    $forms = $content->getElementsByTagName('form');
+    foreach ($forms as $form){
+        $form->setAttribute('target', '_blank');
+    }
+    $button = $content->saveHTML();
+
     $downloadoptions[] = html_writer::tag('div', $button, array('class' => 'align-self-center'));
     echo html_writer::tag('div', implode('', $downloadoptions), array('class' => 'row justify-content-center'));
 }
