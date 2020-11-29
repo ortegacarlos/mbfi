@@ -288,6 +288,9 @@ function mbfi_read_file($path) {
     if (isset($path)) {
         if ($content = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)) {
             foreach ($content as $line) {
+                if (mb_detect_encoding($line, 'UTF-8', true) != 'UTF-8') {
+                    $line = utf8_encode($line);
+                }
                 $answers[] = explode(',', $line);
             }
             $header = array_shift($answers);
