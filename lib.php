@@ -81,25 +81,25 @@ function mbfi_add_instance($mbfi, $mform = null) {
 
     if ($datasource == '0') {
         if (!mbfi_save_file($path, $mform)) {
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
 
         if (!mbfi_check_file(45, $path)) {
             mbfi_delete_file($path);
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
 
         $feedbackscompleted = mbfi_organize_file_data();
 
         if (empty($feedbackscompleted)) {
             mbfi_delete_file($path);
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
     } else {
         if (!mbfi_check_feedback_completed($mbfi->feedback)) {
             $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
             \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
     
         $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
@@ -120,12 +120,12 @@ function mbfi_add_instance($mbfi, $mform = null) {
             mbfi_delete_file($path);
         }
         \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
-        print_error('error');
+        print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
     }
 
     if (file_exists($path)) {
         if (!mbfi_delete_file($path)) {
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
     }
 
@@ -155,25 +155,25 @@ function mbfi_update_instance($mbfi, $mform = null) {
 
     if ($datasource == '0') {
         if (!mbfi_save_file($path, $mform)) {
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
 
         if (!mbfi_check_file(45, $path)) {
             mbfi_delete_file($path);
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
 
         $feedbackscompleted = mbfi_organize_file_data();
 
         if (empty($feedbackscompleted)) {
             mbfi_delete_file($path);
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
     } else {
         if (!mbfi_check_feedback_completed($mbfi->feedback)) {
             $feedbackname = $DB->get_field('feedback', 'name', array('id' => $mbfi->feedback));
             \core\notification::error(get_string('err_feedbackcompleted', 'mbfi', array('name' => $feedbackname)));
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
     
         $feedbackscompleted = $DB->get_records('feedback_completed', array('feedback' => $mbfi->feedback));
@@ -196,12 +196,12 @@ function mbfi_update_instance($mbfi, $mform = null) {
             mbfi_delete_file($path);
         }
         \core\notification::error(get_string('err_calculatedimensions', 'mbfi'));
-        print_error('error');
+        print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
     }
 
     if (file_exists($path)) {
         if (!mbfi_delete_file($path)) {
-            print_error('error');
+            print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
     }
     $mbfi->id = $mbfi->instance;
