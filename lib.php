@@ -429,6 +429,9 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
             } else {
                 $userid = 0 - ($index + 1);
                 $username = substr(str_shuffle('0123456789'), 0, 8);
+                if ($username[0] == 0) {
+                    $username[0] = rand(1, 9);
+                }
                 $fullname = $feedbackcompleted->fullname;
                 $email = $feedbackcompleted->email;
             }
@@ -453,7 +456,7 @@ function mbfi_calculate_dimensions($feedbackscompleted) {
                     $datavalues[] = $data;
                 }
             } else {
-                \core\notification::error(get_string('err_answerscounting', 'mbfi', array('fullname' => $firstname.' '.$lastname)));
+                \core\notification::error(get_string('err_answerscounting', 'mbfi', array('fullname' => $fullname)));
                 return null;
             }
         }
