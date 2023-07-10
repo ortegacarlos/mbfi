@@ -84,7 +84,7 @@ function mbfi_add_instance($mbfi, $mform = null) {
             print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
 
-        if (!mbfi_check_file(45, $path)) {
+        if (!mbfi_check_file(44, $path)) {
             mbfi_delete_file($path);
             print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
@@ -158,7 +158,7 @@ function mbfi_update_instance($mbfi, $mform = null) {
             print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
 
-        if (!mbfi_check_file(45, $path)) {
+        if (!mbfi_check_file(44, $path)) {
             mbfi_delete_file($path);
             print_error('error', '', new moodle_url('/course/view.php', array('id' => $mbfi->course)));
         }
@@ -382,7 +382,7 @@ function mbfi_organize_file_data() {
     if (!empty($MBFI_CONTENT_FILE)) {
         foreach ($MBFI_CONTENT_FILE as $line) {
             $data = new stdClass();
-            $data->amountanswers = 45;
+            $data->amountanswers = 44;
             $data->fullname = str_replace('"', '', $line[0]);
             $data->email = $line[2];
             $data->answers = array();
